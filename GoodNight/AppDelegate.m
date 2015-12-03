@@ -84,7 +84,7 @@
 }
 
 + (void)updateNotifications {
-    NSString *bundleName = @"GoodNight";
+    NSString *bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
     
     [app cancelAllLocalNotifications];
     
