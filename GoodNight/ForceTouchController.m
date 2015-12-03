@@ -11,46 +11,67 @@
 
 @implementation ForceTouchController
 
++ (id)sharedForceTouchController
+{
+    static dispatch_once_t once;
+    static ForceTouchController *sharedForceTouchController = nil;
+    
+    dispatch_once(&once, ^{
+        sharedForceTouchController = [[self alloc] init];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:sharedForceTouchController selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    });
+    
+    return sharedForceTouchController;
+}
+
+
+- (void)userDefaultsChanged:(NSNotification *)notification {
+    [ForceTouchController updateShortcutItems];
+}
+
+
+
 + (UIApplicationShortcutItem *)shortcutItemForCurrentState {
     NSString *shortcutType, *shortcutTitle, *shortcutSubtitle, *iconTemplate = nil;
     
     static NSString * const turnOnText = @"Turn on this adjustment";
     static NSString * const turnOffText = @"Turn off this adjustment";
     
-    if ([userDefaults boolForKey:@"tempForceTouch"]) {
+    if ([groupDefaults boolForKey:@"tempForceTouch"]) {
         shortcutType = @"temperatureForceTouchAction";
         
-        if (![userDefaults boolForKey:@"enabled"]) {
+        if (![groupDefaults boolForKey:@"enabled"]) {
             forceTouchActionEnabled = NO;
             shortcutTitle = @"Enable Temperature";
         }
-        else if ([userDefaults boolForKey:@"enabled"])  {
+        else if ([groupDefaults boolForKey:@"enabled"])  {
             forceTouchActionEnabled = YES;
             shortcutTitle = @"Disable Temperature";
         }
     }
     
-    else if ([userDefaults boolForKey:@"dimForceTouch"]) {
+    else if ([groupDefaults boolForKey:@"dimForceTouch"]) {
         shortcutType = @"dimForceTouchAction";
         
-        if (![userDefaults boolForKey:@"dimEnabled"]) {
+        if (![groupDefaults boolForKey:@"dimEnabled"]) {
             forceTouchActionEnabled = NO;
             shortcutTitle = @"Enable Dimness";
         }
-        else if ([userDefaults boolForKey:@"dimEnabled"]) {
+        else if ([groupDefaults boolForKey:@"dimEnabled"]) {
             forceTouchActionEnabled = YES;
             shortcutTitle = @"Disable Dimness";
         }
     }
     
-    else if ([userDefaults boolForKey:@"rgbForceTouch"]) {
+    else if ([groupDefaults boolForKey:@"rgbForceTouch"]) {
         shortcutType = @"rgbForceTouchAction";
         
-        if (![userDefaults boolForKey:@"rgbEnabled"]) {
+        if (![groupDefaults boolForKey:@"rgbEnabled"]) {
             forceTouchActionEnabled = NO;
             shortcutTitle = @"Enable Color";
         }
-        else if ([userDefaults boolForKey:@"rgbEnabled"]) {
+        else if ([groupDefaults boolForKey:@"rgbEnabled"]) {
             forceTouchActionEnabled = YES;
             shortcutTitle = @"Disable Color";
         }
@@ -73,7 +94,7 @@
 
 + (void)updateShortcutItems {
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0") && [app respondsToSelector:@selector(shortcutItems)] && [app respondsToSelector:@selector(setShortcutItems:)]) {
-        if ([userDefaults boolForKey:@"forceTouchEnabled"]) {
+        if ([groupDefaults boolForKey:@"forceTouchEnabled"]) {
             UIApplicationShortcutItem *shortcut = [self shortcutItemForCurrentState];
             if (shortcut != nil) {
                 NSArray *shortcutArray = @[shortcut];
@@ -90,26 +111,26 @@
 
 + (BOOL)handleShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
     if ([shortcutItem.type isEqualToString:@"temperatureForceTouchAction"]) {
-        if ([userDefaults boolForKey:@"enabled"]) {
+        if ([groupDefaults boolForKey:@"enabled"]) {
             [GammaController disableOrangeness];
         }
-        else if (![userDefaults boolForKey:@"enabled"]) {
+        else if (![groupDefaults boolForKey:@"enabled"]) {
             [GammaController enableOrangenessWithDefaults:YES transition:YES];
         }
     }
     else if ([shortcutItem.type isEqualToString:@"dimForceTouchAction"]) {
-        if ([userDefaults boolForKey:@"dimEnabled"]) {
+        if ([groupDefaults boolForKey:@"dimEnabled"]) {
             [GammaController disableDimness];
         }
-        else if (![userDefaults boolForKey:@"dimEnabled"]) {
+        else if (![groupDefaults boolForKey:@"dimEnabled"]) {
             [GammaController enableDimness];
         }
     }
     else if ([shortcutItem.type isEqualToString:@"rgbForceTouchAction"]) {
-        if ([userDefaults boolForKey:@"rgbEnabled"]) {
+        if ([groupDefaults boolForKey:@"rgbEnabled"]) {
             [GammaController disableColorAdjustment];
         }
-        else if (![userDefaults boolForKey:@"rgbEnabled"]) {
+        else if (![groupDefaults boolForKey:@"rgbEnabled"]) {
             [GammaController setGammaWithCustomValues];
         }
     }
@@ -117,7 +138,7 @@
 }
 
 + (void)exitIfKeyEnabled {
-    if ([userDefaults boolForKey:@"suspendEnabled"] && [[userDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
+    if ([groupDefaults boolForKey:@"suspendEnabled"] && [[groupDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
         [GammaController suspendApp];
     }
 }

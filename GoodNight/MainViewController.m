@@ -63,9 +63,9 @@
     self.startTimeNightTextField.delegate = self;
     
     
-    if ([userDefaults boolForKey:@"colorChangingNightEnabled"] && !([userDefaults boolForKey:@"colorChangingEnabled"] || [userDefaults boolForKey:@"colorChangingLocationEnabled"])){
+    if ([groupDefaults boolForKey:@"colorChangingNightEnabled"] && !([groupDefaults boolForKey:@"colorChangingEnabled"] || [groupDefaults boolForKey:@"colorChangingLocationEnabled"])){
         //Could maybe happen at update from version without night mode
-        [userDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
+        [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
     }
     
     [self updateUI];
@@ -79,18 +79,18 @@
     //Update the footer for last updated background mode if user keeps app open at this level
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationNone];
-    [self.currentOrangeSlider setValue:[userDefaults floatForKey:@"currentOrange"] animated:YES];
+    [self.currentOrangeSlider setValue:[groupDefaults floatForKey:@"currentOrange"] animated:YES];
 }
 
 - (void)updateUI {
-    self.enabledSwitch.on = [userDefaults boolForKey:@"enabled"];
-    self.orangeSlider.value = [userDefaults floatForKey:@"maxOrange"];
+    self.enabledSwitch.on = [groupDefaults boolForKey:@"enabled"];
+    self.orangeSlider.value = [groupDefaults floatForKey:@"maxOrange"];
     
-    [self.currentOrangeSlider setValue:[userDefaults floatForKey:@"currentOrange"] animated:YES];
+    [self.currentOrangeSlider setValue:[groupDefaults floatForKey:@"currentOrange"] animated:YES];
 
-    self.colorChangingEnabledSwitch.on = [userDefaults boolForKey:@"colorChangingEnabled"];
-    self.colorChangingLocationBasedSwitch.on = [userDefaults boolForKey:@"colorChangingLocationEnabled"];
-    self.colorChangingNightModeSwitch.on = [userDefaults boolForKey:@"colorChangingNightEnabled"];
+    self.colorChangingEnabledSwitch.on = [groupDefaults boolForKey:@"colorChangingEnabled"];
+    self.colorChangingLocationBasedSwitch.on = [groupDefaults boolForKey:@"colorChangingLocationEnabled"];
+    self.colorChangingNightModeSwitch.on = [groupDefaults boolForKey:@"colorChangingNightEnabled"];
     
     self.colorChangingNightModeSwitch.enabled = self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on;
     
@@ -108,13 +108,13 @@
     self.colorChangingLocationBasedSwitch.onTintColor = [UIColor colorWithRed:0.9f green:((2.0f-orange)/2.0f)*0.9f blue:(1.0f-orange)*0.9f alpha:1.0];
     self.colorChangingNightModeSwitch.onTintColor = [UIColor colorWithRed:0.8f green:0.495f blue:0.09f alpha:1.0];
     
-    NSDate *date = [self dateForHour:[userDefaults integerForKey:@"autoStartHour"] andMinute:[userDefaults integerForKey:@"autoStartMinute"]];
+    NSDate *date = [self dateForHour:[groupDefaults integerForKey:@"autoStartHour"] andMinute:[groupDefaults integerForKey:@"autoStartMinute"]];
     self.startTimeTextField.text = [self.timeFormatter stringFromDate:date];
-    date = [self dateForHour:[userDefaults integerForKey:@"autoEndHour"] andMinute:[userDefaults integerForKey:@"autoEndMinute"]];
+    date = [self dateForHour:[groupDefaults integerForKey:@"autoEndHour"] andMinute:[groupDefaults integerForKey:@"autoEndMinute"]];
     self.endTimeTextField.text = [self.timeFormatter stringFromDate:date];
-    date = [self dateForHour:[userDefaults integerForKey:@"nightStartHour"] andMinute:[userDefaults integerForKey:@"nightStartMinute"]];
+    date = [self dateForHour:[groupDefaults integerForKey:@"nightStartHour"] andMinute:[groupDefaults integerForKey:@"nightStartMinute"]];
     self.startTimeNightTextField.text = [self.timeFormatter stringFromDate:date];
-    date = [self dateForHour:[userDefaults integerForKey:@"nightEndHour"] andMinute:[userDefaults integerForKey:@"nightEndMinute"]];
+    date = [self dateForHour:[groupDefaults integerForKey:@"nightEndHour"] andMinute:[groupDefaults integerForKey:@"nightEndMinute"]];
     self.endTimeNightTextField.text = [self.timeFormatter stringFromDate:date];
     
     [self.startTimeTextField setEnabled:self.colorChangingEnabledSwitch.on];
@@ -133,7 +133,7 @@
 }
 
 - (IBAction)enabledSwitchChanged {
-    [userDefaults setBool:self.enabledSwitch.on forKey:@"enabled"];
+    [groupDefaults setBool:self.enabledSwitch.on forKey:@"enabled"];
     
     if (self.enabledSwitch.on) {
         [GammaController enableOrangenessWithDefaults:NO transition:YES];
@@ -196,10 +196,10 @@
     NSDateComponents *components = [[NSCalendar currentCalendar] components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:picker.date];
     currentField.text = [self.timeFormatter stringFromDate:picker.date];
     
-    [userDefaults setInteger:components.hour forKey:[defaultsKeyPrefix stringByAppendingString:@"Hour"]];
-    [userDefaults setInteger:components.minute forKey:[defaultsKeyPrefix stringByAppendingString:@"Minute"]];
+    [groupDefaults setInteger:components.hour forKey:[defaultsKeyPrefix stringByAppendingString:@"Hour"]];
+    [groupDefaults setInteger:components.minute forKey:[defaultsKeyPrefix stringByAppendingString:@"Minute"]];
     
-    [userDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
+    [groupDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
     [GammaController autoChangeOrangenessIfNeededWithTransition:NO];
 }
 
@@ -207,16 +207,16 @@
     NSDate *date = nil;
     
     if (textField == self.startTimeTextField) {
-        date = [self dateForHour:[userDefaults integerForKey:@"autoStartHour"] andMinute:[userDefaults integerForKey:@"autoStartMinute"]];
+        date = [self dateForHour:[groupDefaults integerForKey:@"autoStartHour"] andMinute:[groupDefaults integerForKey:@"autoStartMinute"]];
     }
     else if (textField == self.endTimeTextField) {
-        date = [self dateForHour:[userDefaults integerForKey:@"autoEndHour"] andMinute:[userDefaults integerForKey:@"autoEndMinute"]];
+        date = [self dateForHour:[groupDefaults integerForKey:@"autoEndHour"] andMinute:[groupDefaults integerForKey:@"autoEndMinute"]];
     }
     else if (textField == self.startTimeNightTextField) {
-        date = [self dateForHour:[userDefaults integerForKey:@"nightStartHour"] andMinute:[userDefaults integerForKey:@"nightStartMinute"]];
+        date = [self dateForHour:[groupDefaults integerForKey:@"nightStartHour"] andMinute:[groupDefaults integerForKey:@"nightStartMinute"]];
     }
     else if (textField == self.endTimeNightTextField) {
-        date = [self dateForHour:[userDefaults integerForKey:@"nightEndHour"] andMinute:[userDefaults integerForKey:@"nightEndMinute"]];
+        date = [self dateForHour:[groupDefaults integerForKey:@"nightEndHour"] andMinute:[groupDefaults integerForKey:@"nightEndMinute"]];
     }
     else {
         return;
@@ -236,7 +236,7 @@
 }
 
 - (IBAction)maxOrangeSliderChanged {
-    [userDefaults setFloat:self.orangeSlider.value forKey:@"maxOrange"];
+    [groupDefaults setFloat:self.orangeSlider.value forKey:@"maxOrange"];
     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     
     if (self.enabledSwitch.on) {
@@ -246,22 +246,22 @@
 
 - (IBAction)colorChangingEnabledSwitchChanged {
     self.enabledSwitch.enabled = !self.colorChangingEnabledSwitch.on;
-    [userDefaults setBool:self.colorChangingEnabledSwitch.on forKey:@"colorChangingEnabled"];
-    [userDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
+    [groupDefaults setBool:self.colorChangingEnabledSwitch.on forKey:@"colorChangingEnabled"];
+    [groupDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
     
     if(self.colorChangingEnabledSwitch.on) {
         // Only one auto temperature change can be activated
         if (self.colorChangingLocationBasedSwitch.on) {
             [self.colorChangingLocationBasedSwitch setOn:NO animated:YES];
         }
-        [userDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
+        [groupDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
         
         self.colorChangingNightModeSwitch.enabled = YES;
     }
     else{
         [self.colorChangingNightModeSwitch setOn:NO animated:YES];
         self.colorChangingNightModeSwitch.enabled = NO;
-        [userDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
+        [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
     }
     
     [AppDelegate updateNotifications];
@@ -295,21 +295,21 @@
             CGFloat latitude = self.locationManager.location.coordinate.latitude;
             CGFloat longitude = self.locationManager.location.coordinate.longitude;
             if (latitude != 0 && longitude != 0) { // make sure the location is available
-                [userDefaults setFloat:latitude forKey:@"colorChangingLocationLatitude"];
-                [userDefaults setFloat:longitude forKey:@"colorChangingLocationLongitude"];
+                [groupDefaults setFloat:latitude forKey:@"colorChangingLocationLatitude"];
+                [groupDefaults setFloat:longitude forKey:@"colorChangingLocationLongitude"];
             }
             
             [self.colorChangingEnabledSwitch setOn:NO animated:YES];
             
-            [userDefaults setBool:YES forKey:@"colorChangingLocationEnabled"];
+            [groupDefaults setBool:YES forKey:@"colorChangingLocationEnabled"];
             if (self.colorChangingEnabledSwitch.on) {
                 [self.colorChangingEnabledSwitch setOn:NO animated:YES];
             }
-            [userDefaults setBool:NO forKey:@"colorChangingEnabled"];
+            [groupDefaults setBool:NO forKey:@"colorChangingEnabled"];
             
             self.colorChangingNightModeSwitch.enabled = YES;
             self.enabledSwitch.enabled = !self.colorChangingLocationBasedSwitch.on;
-            [userDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
+            [groupDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
             
         } else if(!requestedLocationAuthorization) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No access to location"
@@ -322,22 +322,22 @@
         }
         [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
     } else {
-        [userDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
+        [groupDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
         self.enabledSwitch.enabled = !self.colorChangingLocationBasedSwitch.on;
         
         [self.colorChangingNightModeSwitch setOn:NO animated:YES];
         self.colorChangingNightModeSwitch.enabled = NO;
-        [userDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
+        [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
     }
     
-    [userDefaults synchronize];
+    [groupDefaults synchronize];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     if (status == kCLAuthorizationStatusDenied) {
         [self.colorChangingLocationBasedSwitch setOn:NO animated:YES];
-        [userDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
-        [userDefaults synchronize];
+        [groupDefaults setBool:NO forKey:@"colorChangingLocationEnabled"];
+        [groupDefaults synchronize];
     } else if (status == kCLAuthorizationStatusAuthorizedWhenInUse) {
         // revaluate the UISwitch status
         [self colorChangingLocationSwitchValueChanged];
@@ -345,8 +345,8 @@
 }
 
 - (IBAction)nightModeEnabledSwitchChanged {
-    [userDefaults setBool:self.colorChangingNightModeSwitch.on forKey:@"colorChangingNightEnabled"];
-    [userDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
+    [groupDefaults setBool:self.colorChangingNightModeSwitch.on forKey:@"colorChangingNightEnabled"];
+    [groupDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
     
     [AppDelegate updateNotifications];
     
@@ -358,19 +358,19 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     
     if (self.enabledSwitch.on) {
-        [GammaController setGammaWithTransitionFrom:[userDefaults floatForKey:@"maxOrange"] to:self.orangeSlider.value];
+        [GammaController setGammaWithTransitionFrom:[groupDefaults floatForKey:@"maxOrange"] to:self.orangeSlider.value];
     }
     
-    [userDefaults setFloat:self.orangeSlider.value forKey:@"maxOrange"];
+    [groupDefaults setFloat:self.orangeSlider.value forKey:@"maxOrange"];
 }
 
 - (NSArray <id <UIPreviewActionItem>> *)previewActionItems {
     NSString *title = nil;
     
-    if (![userDefaults boolForKey:@"enabled"]) {
+    if (![groupDefaults boolForKey:@"enabled"]) {
         title = @"Enable";
     }
-    else if ([userDefaults boolForKey:@"enabled"]) {
+    else if ([groupDefaults boolForKey:@"enabled"]) {
         title = @"Disable";
     }
     
@@ -383,10 +383,10 @@
 }
 
 - (void)enableOrDisableBasedOnDefaults {
-    if (![userDefaults boolForKey:@"enabled"]) {
+    if (![groupDefaults boolForKey:@"enabled"]) {
         [GammaController enableOrangenessWithDefaults:YES transition:YES];
     }
-    else if ([userDefaults boolForKey:@"enabled"]) {
+    else if ([groupDefaults boolForKey:@"enabled"]) {
         [GammaController disableOrangeness];
     }
 }
@@ -408,10 +408,10 @@
     NSString *footerText = @"";
     if (tableView) {
         if (section == 1) {
-            footerText = [NSString stringWithFormat:@"Move the slider to adjust the display temperature.\n\nCurrent Temperature: %dK", (int)(([userDefaults floatForKey:@"currentOrange"] * 45 + 20) * 10)*10];
+            footerText = [NSString stringWithFormat:@"Move the slider to adjust the display temperature.\n\nCurrent Temperature: %dK", (int)(([groupDefaults floatForKey:@"currentOrange"] * 45 + 20) * 10)*10];
         }
         if (section == 2) {
-            NSDate *lastBackgroundUpdate = [userDefaults objectForKey:@"lastBackgroundCheck"];
+            NSDate *lastBackgroundUpdate = [groupDefaults objectForKey:@"lastBackgroundCheck"];
             NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
             [dateFormatter setDateFormat:@"HH:mm dd MMM yyyy"];
             footerText = [NSString stringWithFormat:@"Enable automatic mode to turn on and off GoodNight at a set time. Please note that the change will not take effect immediately.\n\nLast Background Update: %@", [lastBackgroundUpdate isEqualToDate:[NSDate distantPast]] ? @"Never" :  [dateFormatter stringFromDate:lastBackgroundUpdate]];

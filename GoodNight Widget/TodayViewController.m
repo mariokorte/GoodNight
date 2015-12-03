@@ -7,6 +7,7 @@
 //
 
 #import "TodayViewController.h"
+#import "GammaController.h"
 
 @implementation TodayViewController
 
@@ -15,31 +16,65 @@
     
     self.preferredContentSize = CGSizeMake(0, 110);
     
-    self.enableButton.layer.cornerRadius = 7;
-    self.enableButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
-    self.enableButton.layer.masksToBounds = YES;
+    [self.toggleButton setTitle:@"Deactivate" forState:UIControlStateSelected];
+    [self.toggleButton setTitle:@"Activate" forState:UIControlStateNormal];
+    
+    self.toggleButton.layer.cornerRadius = 7;
+    self.toggleButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
+    self.toggleButton.layer.masksToBounds = YES;
+    self.toggleButton.clipsToBounds = YES;
     
     self.disableButton.layer.cornerRadius = 7;
     self.disableButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
     self.disableButton.layer.masksToBounds = YES;
     
     if (self.view.bounds.size.width > 320) {
-        self.enableButton.frame = CGRectMake(self.enableButton.frame.origin.x + 30, self.enableButton.frame.origin.y, self.enableButton.frame.size.width, self.enableButton.frame.size.height);
+        self.toggleButton.frame = CGRectMake(self.toggleButton.frame.origin.x + 30, self.toggleButton.frame.origin.y, self.toggleButton.frame.size.width, self.toggleButton.frame.size.height);
         self.disableButton.frame = CGRectMake(self.disableButton.frame.origin.x + 30, self.disableButton.frame.origin.y, self.disableButton.frame.size.width, self.disableButton.frame.size.height);
         self.temperatureLabel.frame = CGRectMake(self.temperatureLabel.frame.origin.x + 30, self.temperatureLabel.frame.origin.y, self.temperatureLabel.frame.size.width, self.temperatureLabel.frame.size.height);
     }
+    
+    [self updateUI];
 }
 
-- (IBAction)enableButtonClicked {
-    [self.extensionContext openURL:[NSURL URLWithString:@"goodnight://enable"] completionHandler:nil];
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self updateUI];
+}
+
+- (void)updateUI {
+    BOOL enabled = [groupDefaults boolForKey:@"enabled"];
+    self.toggleButton.selected = enabled;
+}
+
+- (IBAction)toggleButtonClicked {
+    BOOL enabled = [groupDefaults boolForKey:@"enabled"];
+    
+    if (enabled){
+        [GammaController disableOrangeness];
+    }
+    else{
+        [GammaController enableOrangenessWithDefaults:YES transition:YES];
+    }
+    
+    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingEnabled"];
+    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingLocationEnabled"];
+    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingNightEnabled"];
+    
+    [self updateUI];
 }
 
 - (IBAction)disableButtonClicked {
-    [self.extensionContext openURL:[NSURL URLWithString:@"goodnight://disable"] completionHandler:nil];
+
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
-    completionHandler(NCUpdateResultNewData);
+    BOOL enabledOnLastCheck = [groupDefaults boolForKey:@"widgetLastCheckEnabled"];
+    BOOL enabled = [groupDefaults boolForKey:@"enabled"];
+    [groupDefaults setBool:enabled forKey:@"widgetLastCheckEnabled"];
+    [groupDefaults synchronize];
+    
+    completionHandler(enabledOnLastCheck != enabled ? NCUpdateResultNewData : NCUpdateResultNoData);
 }
 
 @end

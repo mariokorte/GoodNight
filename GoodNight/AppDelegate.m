@@ -15,6 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+        
     NSDictionary *defaultsToRegister = @{@"enabled": @NO,
                                          @"maxOrange": @0.3111111111,
                                          @"nightOrange": @0.0,
@@ -48,7 +49,7 @@
                                          @"keyEnabled": @"0",
                                          @"lastBackgroundCheck": [NSDate distantPast]};
     
-    [userDefaults registerDefaults:defaultsToRegister];
+    [groupDefaults registerDefaults:defaultsToRegister];
     [GammaController autoChangeOrangenessIfNeededWithTransition:NO];
     [self registerForNotifications];
     [AppDelegate updateNotifications];
@@ -56,6 +57,8 @@
     if (application.applicationState == UIApplicationStateBackground) {
         [self installBackgroundTask:application];
     }
+    
+    [ForceTouchController sharedForceTouchController];
     
     return YES;
 }
@@ -67,8 +70,8 @@
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [userDefaults setObject:[NSDate date] forKey:@"lastBackgroundCheck"];
-    [userDefaults synchronize];
+    [groupDefaults setObject:[NSDate date] forKey:@"lastBackgroundCheck"];
+    [groupDefaults synchronize];
     [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
     [NSThread sleepForTimeInterval:5.0];
     completionHandler(UIBackgroundFetchResultNewData);
@@ -85,7 +88,7 @@
     
     [app cancelAllLocalNotifications];
     
-    if ([userDefaults boolForKey:@"colorChangingEnabled"]){
+    if ([groupDefaults boolForKey:@"colorChangingEnabled"]){
         
         UILocalNotification *enableNotification = [[UILocalNotification alloc] init];
         
@@ -94,8 +97,8 @@
         }
         
         NSDateComponents *compsForEnable = [[NSDateComponents alloc] init];
-        [compsForEnable setHour:[userDefaults integerForKey:@"autoStartHour"]];
-        [compsForEnable setMinute:[userDefaults integerForKey:@"autoStartMinute"]];
+        [compsForEnable setHour:[groupDefaults integerForKey:@"autoStartHour"]];
+        [compsForEnable setMinute:[groupDefaults integerForKey:@"autoStartMinute"]];
         [enableNotification setSoundName:UILocalNotificationDefaultSoundName];
         [enableNotification setAlertTitle:bundleName];
         [enableNotification setAlertBody:[NSString stringWithFormat:@"Time to enable %@!", bundleName]];
@@ -110,8 +113,8 @@
         }
         
         NSDateComponents *compsForDisable = [[NSDateComponents alloc] init];
-        [compsForDisable setHour:[userDefaults integerForKey:@"autoEndHour"]];
-        [compsForDisable setMinute:[userDefaults integerForKey:@"autoEndMinute"]];
+        [compsForDisable setHour:[groupDefaults integerForKey:@"autoEndHour"]];
+        [compsForDisable setMinute:[groupDefaults integerForKey:@"autoEndMinute"]];
         [disableNotification setSoundName:UILocalNotificationDefaultSoundName];
         [disableNotification setAlertTitle:bundleName];
         [disableNotification setAlertBody:[NSString stringWithFormat:@"Time to disable %@!", bundleName]];
@@ -123,8 +126,8 @@
         [app scheduleLocalNotification:disableNotification];
     }
     
-    if ([userDefaults boolForKey:@"colorChangingEnabled"] || [userDefaults boolForKey:@"colorChangingLocationEnabled"]){
-        if ([userDefaults boolForKey:@"colorChangingNightEnabled"]) {
+    if ([groupDefaults boolForKey:@"colorChangingEnabled"] || [groupDefaults boolForKey:@"colorChangingLocationEnabled"]){
+        if ([groupDefaults boolForKey:@"colorChangingNightEnabled"]) {
             
             UILocalNotification *enableNightNotification = [[UILocalNotification alloc] init];
             
@@ -133,8 +136,8 @@
             }
             
             NSDateComponents *compsForNightEnable = [[NSDateComponents alloc] init];
-            [compsForNightEnable setHour:[userDefaults integerForKey:@"nightStartHour"]];
-            [compsForNightEnable setMinute:[userDefaults integerForKey:@"nightStartMinute"]];
+            [compsForNightEnable setHour:[groupDefaults integerForKey:@"nightStartHour"]];
+            [compsForNightEnable setMinute:[groupDefaults integerForKey:@"nightStartMinute"]];
             [enableNightNotification setSoundName:UILocalNotificationDefaultSoundName];
             [enableNightNotification setAlertTitle:bundleName];
             [enableNightNotification setAlertBody:[NSString stringWithFormat:@"Time to enable night mode!"]];
@@ -149,8 +152,8 @@
             }
             
             NSDateComponents *compsForNightDisable = [[NSDateComponents alloc] init];
-            [compsForNightDisable setHour:[userDefaults integerForKey:@"nightEndHour"]];
-            [compsForNightDisable setMinute:[userDefaults integerForKey:@"nightEndMinute"]];
+            [compsForNightDisable setHour:[groupDefaults integerForKey:@"nightEndHour"]];
+            [compsForNightDisable setMinute:[groupDefaults integerForKey:@"nightEndMinute"]];
             [disableNightNotification setSoundName:UILocalNotificationDefaultSoundName];
             [disableNightNotification setAlertTitle:bundleName];
             [disableNightNotification setAlertBody:[NSString stringWithFormat:@"Time to disable night mode!"]];
@@ -165,7 +168,7 @@
 }
 
 - (BOOL) installBackgroundTask:(UIApplication *)application{
-    if (![userDefaults boolForKey:@"colorChangingEnabled"] && ![userDefaults boolForKey:@"colorChangingLocationEnabled"]) {
+    if (![groupDefaults boolForKey:@"colorChangingEnabled"] && ![groupDefaults boolForKey:@"colorChangingLocationEnabled"]) {
         [application clearKeepAliveTimeout];
         [application setMinimumBackgroundFetchInterval:86400];
         return NO;
@@ -174,8 +177,8 @@
     [application setMinimumBackgroundFetchInterval:900];
     
     BOOL result = [app setKeepAliveTimeout:600 handler:^{
-        [userDefaults setObject:[NSDate date] forKey:@"lastBackgroundCheck"];
-        [userDefaults synchronize];
+        [groupDefaults setObject:[NSDate date] forKey:@"lastBackgroundCheck"];
+        [groupDefaults synchronize];
         [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
         [NSThread sleepForTimeInterval:5.0];
     }];
@@ -190,15 +193,15 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id) annotation {
     if ([url.scheme isEqualToString: @"goodnight"]) {
-        if ([url.host isEqualToString: @"enable"] && ![userDefaults boolForKey:@"enabled"]) {
+        if ([url.host isEqualToString: @"enable"] && ![groupDefaults boolForKey:@"enabled"]) {
             [GammaController enableOrangenessWithDefaults:YES transition:YES];
-            if ([[userDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
+            if ([[groupDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
                 [GammaController suspendApp];
             }
         }
-        else if ([url.host isEqualToString: @"disable"] && [userDefaults boolForKey:@"enabled"]) {
+        else if ([url.host isEqualToString: @"disable"] && [groupDefaults boolForKey:@"enabled"]) {
             [GammaController disableOrangeness];
-            if ([[userDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
+            if ([[groupDefaults objectForKey:@"keyEnabled"] isEqualToString:@"0"]) {
                 [GammaController suspendApp];
             }
         }

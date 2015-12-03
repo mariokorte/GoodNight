@@ -32,8 +32,8 @@
 }
 
 - (void)updateUI {
-    self.dimSlider.value = [userDefaults floatForKey:@"dimLevel"];
-    self.dimSwitch.on = [userDefaults boolForKey:@"dimEnabled"];
+    self.dimSlider.value = [groupDefaults floatForKey:@"dimLevel"];
+    self.dimSwitch.on = [groupDefaults boolForKey:@"dimEnabled"];
     
     float brightness = self.dimSlider.value;
     
@@ -43,7 +43,7 @@
 }
 
 - (IBAction)brightnessSwitchChanged {
-    [userDefaults setBool:self.dimSwitch.on forKey:@"dimEnabled"];
+    [groupDefaults setBool:self.dimSwitch.on forKey:@"dimEnabled"];
         
     if (self.dimSwitch.on) {
         [GammaController enableDimness];
@@ -84,7 +84,7 @@
     }
     
     
-    [userDefaults setFloat:self.dimSlider.value forKey:@"dimLevel"];
+    [groupDefaults setFloat:self.dimSlider.value forKey:@"dimLevel"];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
 
     if (self.dimSwitch.on) {
@@ -100,7 +100,7 @@
 
 - (IBAction)resetSlider {
     self.dimSlider.value = 1.0;
-    [userDefaults setFloat:self.dimSlider.value forKey:@"dimLevel"];
+    [groupDefaults setFloat:self.dimSlider.value forKey:@"dimLevel"];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     
     if (self.dimSwitch.on) {
@@ -111,10 +111,10 @@
 - (NSArray <id <UIPreviewActionItem>> *)previewActionItems {
     NSString *title = nil;
     
-    if (![userDefaults boolForKey:@"dimEnabled"]) {
+    if (![groupDefaults boolForKey:@"dimEnabled"]) {
         title = @"Enable";
     }
-    else if ([userDefaults boolForKey:@"dimEnabled"]) {
+    else if ([groupDefaults boolForKey:@"dimEnabled"]) {
         title = @"Disable";
     }
     
@@ -127,10 +127,10 @@
 }
 
 - (void)enableOrDisableBasedOnDefaults {
-    if (![userDefaults boolForKey:@"dimEnabled"]) {
+    if (![groupDefaults boolForKey:@"dimEnabled"]) {
         [GammaController enableDimness];
     }
-    else if ([userDefaults boolForKey:@"dimEnabled"]) {
+    else if ([groupDefaults boolForKey:@"dimEnabled"]) {
         [GammaController disableDimness];
     }
 }
