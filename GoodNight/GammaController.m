@@ -7,7 +7,6 @@
 //
 
 #import "GammaController.h"
-#import "ForceTouchController.h"
 
 #import "NSDate+Extensions.h"
 #include <dlfcn.h>
@@ -107,17 +106,17 @@
 }
 
 + (void)autoChangeOrangenessIfNeededWithTransition:(BOOL)transition {
-    if (![userDefaults boolForKey:@"colorChangingEnabled"] && ![userDefaults boolForKey:@"colorChangingLocationEnabled"]) {
+    if (![groupDefaults boolForKey:@"colorChangingEnabled"] && ![groupDefaults boolForKey:@"colorChangingLocationEnabled"]) {
         return;
     }
     
     BOOL nightModeWasEnabled = NO;
     
-    if ([userDefaults boolForKey:@"colorChangingNightEnabled"] && [userDefaults boolForKey:@"enabled"]) {
+    if ([groupDefaults boolForKey:@"colorChangingNightEnabled"] && [groupDefaults boolForKey:@"enabled"]) {
         TimeBasedAction nightAction = [self timeBasedActionForPrefix:@"night"];
         switch (nightAction) {
             case SwitchToOrangeness:
-                [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:[userDefaults floatForKey:@"nightOrange"]];
+                [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
                 nightModeWasEnabled = YES;
                 break;
             default:
@@ -128,9 +127,9 @@
     
 
     if (!nightModeWasEnabled){
-        if ([userDefaults boolForKey:@"colorChangingLocationEnabled"]) {
+        if ([groupDefaults boolForKey:@"colorChangingLocationEnabled"]) {
             [self switchScreenTemperatureBasedOnLocation];
-        } else if ([userDefaults boolForKey:@"colorChangingEnabled"]){
+        } else if ([groupDefaults boolForKey:@"colorChangingEnabled"]){
             TimeBasedAction autoAction = [self timeBasedActionForPrefix:@"auto"];
             
             switch (autoAction) {
@@ -147,17 +146,17 @@
         }
     }
     
-    [userDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
-    [userDefaults synchronize];
+    [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
+    [groupDefaults synchronize];
 }
 
 + (void)enableOrangenessWithDefaults:(BOOL)defaults transition:(BOOL)transition {
-    float orangeLevel = [userDefaults floatForKey:@"maxOrange"];
+    float orangeLevel = [groupDefaults floatForKey:@"maxOrange"];
     [self enableOrangenessWithDefaults:defaults transition:transition orangeLevel:orangeLevel];
 }
 
 + (void)enableOrangenessWithDefaults:(BOOL)defaults transition:(BOOL)transition orangeLevel:(float)orangeLevel {
-    float currentOrangeLevel = [userDefaults floatForKey:@"currentOrange"];
+    float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
     if (currentOrangeLevel == orangeLevel) {
         return;
     }
@@ -172,17 +171,16 @@
             [self setGammaWithOrangeness:orangeLevel];
         }
         if (defaults == YES) {
-            [userDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
-            [userDefaults setBool:YES forKey:@"enabled"];
+            [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
+            [groupDefaults setBool:YES forKey:@"enabled"];
         }
-        [userDefaults setObject:@"0" forKey:@"keyEnabled"];
+        [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
     }
     else {
         [self showFailedAlertWithKey:@"enabled"];
     }
-    [userDefaults setFloat:orangeLevel forKey:@"currentOrange"];
-    [userDefaults synchronize];
-    [ForceTouchController updateShortcutItems];
+    [groupDefaults setFloat:orangeLevel forKey:@"currentOrange"];
+    [groupDefaults synchronize];
 }
 
 static NSOperationQueue *queue = nil;
@@ -230,26 +228,25 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)disableOrangenessWithDefaults:(BOOL)defaults key:(NSString *)key transition:(BOOL)transition {
-    float currentOrangeLevel = [userDefaults floatForKey:@"currentOrange"];
+    float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
     if (currentOrangeLevel == 1.0) {
         return;
     }
     
     [self wakeUpScreenIfNeeded];
     if (transition == YES) {
-        float currentOrangeLevel = [userDefaults floatForKey:@"currentOrange"];
+        float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
         [self setGammaWithTransitionFrom:currentOrangeLevel to:1.0];
     }
     else {
         [self setGammaWithOrangeness:1.0];
     }
     if (defaults == YES) {
-        [userDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
-        [userDefaults setBool:NO forKey:key];
+        [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
+        [groupDefaults setBool:NO forKey:key];
     }
-    [userDefaults setFloat:1.0 forKey:@"currentOrange"];
-    [userDefaults synchronize];
-    [ForceTouchController updateShortcutItems];
+    [groupDefaults setFloat:1.0 forKey:@"currentOrange"];
+    [groupDefaults synchronize];
 }
 
 + (BOOL)wakeUpScreenIfNeeded {
@@ -275,41 +272,40 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)showFailedAlertWithKey:(NSString *)key {
-    [userDefaults setObject:@"1" forKey:@"keyEnabled"];
-    [userDefaults setBool:NO forKey:key];
-    [userDefaults synchronize];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You may only use one adjustment at a time. Please disable any other adjustments before enabling this one." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
+    [groupDefaults setObject:@"1" forKey:@"keyEnabled"];
+    [groupDefaults setBool:NO forKey:key];
+    [groupDefaults synchronize];
+    
+    //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You may only use one adjustment at a time. Please disable any other adjustments before enabling this one." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    //[alert show];
 }
 
 + (void)enableDimness {
     if ([self adjustmentForKeysEnabled:@"enabled" key2:@"rgbEnabled"] == NO) {
-        float dimLevel = [userDefaults floatForKey:@"dimLevel"];
+        float dimLevel = [groupDefaults floatForKey:@"dimLevel"];
         [self setGammaWithRed:dimLevel green:dimLevel blue:dimLevel];
-        [userDefaults setBool:YES forKey:@"dimEnabled"];
-        [userDefaults setObject:@"0" forKey:@"keyEnabled"];
+        [groupDefaults setBool:YES forKey:@"dimEnabled"];
+        [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
     }
     else {
         [self showFailedAlertWithKey:@"dimEnabled"];
     }
-    [userDefaults synchronize];
-    [ForceTouchController updateShortcutItems];
+    [groupDefaults synchronize];
 }
 
 + (void)setGammaWithCustomValues {
     if ([self adjustmentForKeysEnabled:@"dimEnabled" key2:@"enabled"] == NO) {
-        float redValue = [userDefaults floatForKey:@"redValue"];
-        float greenValue = [userDefaults floatForKey:@"greenValue"];
-        float blueValue = [userDefaults floatForKey:@"blueValue"];
+        float redValue = [groupDefaults floatForKey:@"redValue"];
+        float greenValue = [groupDefaults floatForKey:@"greenValue"];
+        float blueValue = [groupDefaults floatForKey:@"blueValue"];
         [self setGammaWithRed:redValue green:greenValue blue:blueValue];
-        [userDefaults setBool:YES forKey:@"rgbEnabled"];
-        [userDefaults setObject:@"0" forKey:@"keyEnabled"];
+        [groupDefaults setBool:YES forKey:@"rgbEnabled"];
+        [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
     }
     else {
         [self showFailedAlertWithKey:@"rgbEnabled"];
     }
-    [userDefaults synchronize];
-    [ForceTouchController updateShortcutItems];
+    [groupDefaults synchronize];
 }
 
 + (void)disableColorAdjustment {
@@ -325,11 +321,11 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)switchScreenTemperatureBasedOnLocation {
-    float latitude = [userDefaults floatForKey:@"colorChangingLocationLatitude"];
-    float longitude = [userDefaults floatForKey:@"colorChangingLocationLongitude"];
+    float latitude = [groupDefaults floatForKey:@"colorChangingLocationLatitude"];
+    float longitude = [groupDefaults floatForKey:@"colorChangingLocationLongitude"];
     
     double solarAngularElevation = solar_elevation([[NSDate date] timeIntervalSince1970], latitude, longitude);
-    float maxOrange = [userDefaults floatForKey:@"maxOrange"];
+    float maxOrange = [groupDefaults floatForKey:@"maxOrange"];
     float maxOrangePercentage = maxOrange * 100;
     float orangeness = (calculate_interpolated_value(solarAngularElevation, 0, maxOrangePercentage) / 100);
     
@@ -352,12 +348,12 @@ static NSOperationQueue *queue = nil;
     
     NSDate *currentDate = [NSDate date];
     NSDateComponents *autoOnOffComponents = [[NSCalendar currentCalendar] components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:[NSDate date]];
-    autoOnOffComponents.hour = [userDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"StartHour"]];
-    autoOnOffComponents.minute = [userDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"StartMinute"]];
+    autoOnOffComponents.hour = [groupDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"StartHour"]];
+    autoOnOffComponents.minute = [groupDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"StartMinute"]];
     NSDate *turnOnDate = [[NSCalendar currentCalendar] dateFromComponents:autoOnOffComponents];
     
-    autoOnOffComponents.hour = [userDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"EndHour"]];
-    autoOnOffComponents.minute = [userDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"EndMinute"]];
+    autoOnOffComponents.hour = [groupDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"EndHour"]];
+    autoOnOffComponents.minute = [groupDefaults integerForKey:[autoOrNightPrefix stringByAppendingString:@"EndMinute"]];
     NSDate *turnOffDate = [[NSCalendar currentCalendar] dateFromComponents:autoOnOffComponents];
     
     if ([turnOnDate isLaterThan:turnOffDate]) {
@@ -372,12 +368,12 @@ static NSOperationQueue *queue = nil;
     }
     
     if ([turnOnDate isEarlierThan:currentDate] && [turnOffDate isLaterThan:currentDate]) {
-        if ([turnOnDate isLaterThan:[userDefaults objectForKey:@"lastAutoChangeDate"]]) {
+        if ([turnOnDate isLaterThan:[groupDefaults objectForKey:@"lastAutoChangeDate"]]) {
             return SwitchToOrangeness;
         }
     }
     else {
-        if ([turnOffDate isLaterThan:[userDefaults objectForKey:@"lastAutoChangeDate"]]) {
+        if ([turnOffDate isLaterThan:[groupDefaults objectForKey:@"lastAutoChangeDate"]]) {
             return SwitchToStandard;
         }
     }
@@ -399,7 +395,7 @@ static NSOperationQueue *queue = nil;
 }
 
 + (BOOL)adjustmentForKeysEnabled:(NSString *)key1 key2:(NSString *)key2 {
-    if (![userDefaults boolForKey:key1] && ![userDefaults boolForKey:key2]) {
+    if (![groupDefaults boolForKey:key1] && ![groupDefaults boolForKey:key2]) {
         return NO;
     }
     return YES;
