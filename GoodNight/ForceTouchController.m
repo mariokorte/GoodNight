@@ -13,24 +13,40 @@
 
 + (id)sharedForceTouchController
 {
+    //Singleton
     static dispatch_once_t once;
     static ForceTouchController *sharedForceTouchController = nil;
     
     dispatch_once(&once, ^{
         sharedForceTouchController = [[self alloc] init];
         
-        [[NSNotificationCenter defaultCenter] addObserver:sharedForceTouchController selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+        //[[NSNotificationCenter defaultCenter] addObserver:sharedForceTouchController selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+        NSUserDefaults *defaults = userDefaults;
+        [defaults addSuiteNamed:groupName];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"dimEnabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"rgbEnabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"keyEnabled" options:NSKeyValueObservingOptionNew context:NULL];
     });
     
     return sharedForceTouchController;
 }
 
-
-- (void)userDefaultsChanged:(NSNotification *)notification {
-    [ForceTouchController updateShortcutItems];
+- (void) dealloc
+{
+    NSUserDefaults *defaults = userDefaults;
+    [defaults addSuiteNamed:groupName];
+    [defaults removeObserver:self forKeyPath:@"enabled"];
+    [defaults removeObserver:self forKeyPath:@"dimEnabled"];
+    [defaults removeObserver:self forKeyPath:@"rgbEnabled"];
+    [defaults removeObserver:self forKeyPath:@"keyEnabled"];
 }
 
-
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"KVO: %@ changed property %@ to value %@", object, keyPath, change);
+    [ForceTouchController updateShortcutItems];
+}
 
 + (UIApplicationShortcutItem *)shortcutItemForCurrentState {
     NSString *shortcutType, *shortcutTitle, *shortcutSubtitle, *iconTemplate = nil;

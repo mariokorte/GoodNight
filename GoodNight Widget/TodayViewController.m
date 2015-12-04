@@ -16,9 +16,6 @@
     
     self.preferredContentSize = CGSizeMake(0, 110);
     
-    [self.toggleButton setTitle:@"Deactivate" forState:UIControlStateSelected];
-    [self.toggleButton setTitle:@"Activate" forState:UIControlStateNormal];
-    
     self.toggleButton.layer.cornerRadius = 7;
     self.toggleButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
     self.toggleButton.layer.masksToBounds = YES;
