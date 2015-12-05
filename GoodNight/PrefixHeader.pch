@@ -11,7 +11,7 @@
 
 #define appGroupID @"group.xyz.korte.goodnight"
 #define userDefaults [NSUserDefaults standardUserDefaults]
-#define groupDefaults [[NSUserDefaults alloc] initWithSuiteName:groupName]
+#define groupDefaults [[NSUserDefaults alloc] initWithSuiteName:appGroupID]
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define app [UIApplication sharedApplication]
 
