@@ -25,13 +25,13 @@
                                     <action selector="disableButtonClicked" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="ugH-Bw-d1S"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zOd-Wo-5gC">
+                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zOd-Wo-5gC">
                                 <rect key="frame" x="1" y="21" width="108" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <color key="tintColor" red="1" green="0.5741595838301673" blue="0.31438554064946655" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Toggle">
+                                <state key="normal" title="Activate">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>

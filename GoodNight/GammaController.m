@@ -38,10 +38,10 @@
     
     uint32_t data[0xc0c / sizeof(uint32_t)];
     memset(data, 0, sizeof(data));
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory stringByAppendingString:@"/gammatable.dat"];
+
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSURL* containerURL = [fileManager containerURLForSecurityApplicationGroupIdentifier:groupName];
+    NSString* filePath = [[containerURL path] stringByAppendingString:@"/gammatable.dat"];
     FILE *file = fopen([filePath UTF8String], "rb");
     
     if (file == NULL) {

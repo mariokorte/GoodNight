@@ -17,9 +17,10 @@
     
     dispatch_once(&onceToken, ^{
         sharedForceTouchController = [[self alloc] init];
-        
+
         NSUserDefaults *defaults = userDefaults;
         [defaults addSuiteNamed:appGroupID];
+
         [defaults addObserver:sharedForceTouchController forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
         [defaults addObserver:sharedForceTouchController forKeyPath:@"dimEnabled" options:NSKeyValueObservingOptionNew context:NULL];
         [defaults addObserver:sharedForceTouchController forKeyPath:@"rgbEnabled" options:NSKeyValueObservingOptionNew context:NULL];
@@ -28,7 +29,6 @@
     
     return sharedForceTouchController;
 }
-
 
 - (void)userDefaultsChanged:(NSNotification *)notification {
     [ForceTouchController updateShortcutItems];
