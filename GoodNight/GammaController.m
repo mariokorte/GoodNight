@@ -40,7 +40,7 @@
     memset(data, 0, sizeof(data));
 
     NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSURL* containerURL = [fileManager containerURLForSecurityApplicationGroupIdentifier:groupName];
+    NSURL* containerURL = [fileManager containerURLForSecurityApplicationGroupIdentifier:appGroupID];
     NSString* filePath = [[containerURL path] stringByAppendingString:@"/gammatable.dat"];
     FILE *file = fopen([filePath UTF8String], "rb");
     
