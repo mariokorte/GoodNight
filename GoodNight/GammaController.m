@@ -117,13 +117,13 @@
         switch (nightAction) {
             case SwitchToOrangeness:
                 [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
+            case KeepOrangenessEnabled:
                 nightModeWasEnabled = YES;
                 break;
             default:
                 break;
         }
     }
-    
     
 
     if (!nightModeWasEnabled){
@@ -139,7 +139,6 @@
                 case SwitchToStandard:
                     [self disableOrangeness];
                     break;
-                case NoSwitchNeeded:
                 default:
                     break;
             }
@@ -215,24 +214,17 @@ static NSOperationQueue *queue = nil;
         }
     }];
     
-    if ([operation respondsToSelector:@selector(setQualityOfService:)]){
+    if ([operation respondsToSelector:@selector(setQualityOfService:)]) {
         [operation setQualityOfService:NSQualityOfServiceUserInteractive];
     }
-    else{
+    else {
         [operation setThreadPriority:1.0f];
     }
     operation.queuePriority = NSOperationQueuePriorityVeryHigh;
-
     [queue addOperation:operation];
-
 }
 
 + (void)disableOrangenessWithDefaults:(BOOL)defaults key:(NSString *)key transition:(BOOL)transition {
-    float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
-    if (currentOrangeLevel == 1.0) {
-        return;
-    }
-    
     [self wakeUpScreenIfNeeded];
     if (transition == YES) {
         float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
@@ -317,6 +309,10 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)disableOrangeness {
+    float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
+    if (!(currentOrangeLevel < 1.0f)) {
+        return;
+    }
     [GammaController disableOrangenessWithDefaults:YES key:@"enabled" transition:YES];
 }
 
@@ -371,15 +367,14 @@ static NSOperationQueue *queue = nil;
         if ([turnOnDate isLaterThan:[groupDefaults objectForKey:@"lastAutoChangeDate"]]) {
             return SwitchToOrangeness;
         }
+        return KeepOrangenessEnabled;
     }
     else {
         if ([turnOffDate isLaterThan:[groupDefaults objectForKey:@"lastAutoChangeDate"]]) {
             return SwitchToStandard;
         }
+        return KeepStandardEnabled;
     }
-
-    return NoSwitchNeeded;
-
 }
 
 + (void)suspendApp {

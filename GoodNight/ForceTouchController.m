@@ -11,15 +11,19 @@
 
 @implementation ForceTouchController
 
-+ (id)sharedForceTouchController
-{
-    static dispatch_once_t once;
++ (id)sharedForceTouchController {
+    static dispatch_once_t onceToken = 0;
     static ForceTouchController *sharedForceTouchController = nil;
     
-    dispatch_once(&once, ^{
+    dispatch_once(&onceToken, ^{
         sharedForceTouchController = [[self alloc] init];
         
-        [[NSNotificationCenter defaultCenter] addObserver:sharedForceTouchController selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+        NSUserDefaults *defaults = userDefaults;
+        [defaults addSuiteNamed:appGroupID];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"dimEnabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"rgbEnabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"keyEnabled" options:NSKeyValueObservingOptionNew context:NULL];
     });
     
     return sharedForceTouchController;
@@ -30,7 +34,18 @@
     [ForceTouchController updateShortcutItems];
 }
 
+- (void)dealloc {
+    NSUserDefaults *defaults = userDefaults;
+    [defaults addSuiteNamed:appGroupID];
+    [defaults removeObserver:self forKeyPath:@"enabled"];
+    [defaults removeObserver:self forKeyPath:@"dimEnabled"];
+    [defaults removeObserver:self forKeyPath:@"rgbEnabled"];
+    [defaults removeObserver:self forKeyPath:@"keyEnabled"];
+}
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [ForceTouchController updateShortcutItems];
+}
 
 + (UIApplicationShortcutItem *)shortcutItemForCurrentState {
     NSString *shortcutType, *shortcutTitle, *shortcutSubtitle, *iconTemplate = nil;
