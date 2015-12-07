@@ -198,6 +198,9 @@ static NSOperationQueue *queue = nil;
         if (newPercentOrange > oldPercentOrange) {
             for (float i = oldPercentOrange; i <= newPercentOrange; i = i + 0.01) {
                 if (weakOperation.isCancelled) break;
+                if (i > 0.99) {
+                    i = 1.0f;
+                }
                 [NSThread sleepForTimeInterval:0.02];
                 [self setGammaWithOrangeness:i];
             }
@@ -206,7 +209,7 @@ static NSOperationQueue *queue = nil;
             for (float i = oldPercentOrange; i >= newPercentOrange; i = i - 0.01) {
                 if (weakOperation.isCancelled) break;
                 if (i < 0.01) {
-                    i = 0;
+                    i = 0.0f;
                 }
                 [NSThread sleepForTimeInterval:0.02];
                 [self setGammaWithOrangeness:i];
