@@ -24,10 +24,10 @@
     
     warningIgnored = NO;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(groupDefaultsChanged:) name:NSgroupDefaultsDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
 }
 
-- (void)groupDefaultsChanged:(NSNotification *)notification {
+- (void)userDefaultsChanged:(NSNotification *)notification {
     [self updateUI];
 }
 

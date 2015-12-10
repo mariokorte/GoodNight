@@ -142,6 +142,8 @@
     else {
         [GammaController disableOrangeness];
     }
+    
+    [groupDefaults setBool:NO forKey:@"manualOverride"];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -265,6 +267,8 @@
         [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
     }
     
+        [groupDefaults setBool:NO forKey:@"manualOverride"];
+    
     [AppDelegate updateNotifications];
     
     [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
@@ -276,7 +280,7 @@
     if (!sender && !self.colorChangingLocationBasedSwitch.on){
         return;
     }
-    
+
     if(self.colorChangingLocationBasedSwitch.on) {
         // Only one auto temperature change can be activated
         
@@ -335,6 +339,8 @@
         [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
     }
     
+    [groupDefaults setBool:NO forKey:@"manualOverride"];
+    
     [groupDefaults synchronize];
 }
 
@@ -349,10 +355,10 @@
     }
 }
 
-- (IBAction)nightModeEnabledSwitchChanged {
+- (IBAction)nightModeEnabledSwitchChanged:(UISwitch *)sender {
     [groupDefaults setBool:self.colorChangingNightModeSwitch.on forKey:@"colorChangingNightEnabled"];
     [groupDefaults setObject:[NSDate distantPast] forKey:@"lastAutoChangeDate"];
-    
+   
     [AppDelegate updateNotifications];
     
     [GammaController autoChangeOrangenessIfNeededWithTransition:YES];

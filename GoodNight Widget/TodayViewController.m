@@ -14,6 +14,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"Defaults" ofType:@"plist"];
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
+    [groupDefaults registerDefaults:appDefaults];
+    
     self.preferredContentSize = CGSizeMake(0, 110);
     
     self.toggleButton.layer.cornerRadius = 7;
@@ -53,10 +57,8 @@
     else{
         [GammaController enableOrangenessWithDefaults:YES transition:YES];
     }
-    
-    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingEnabled"];
-    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingLocationEnabled"];
-    [groupDefaults setBool:@NO.boolValue forKey:@"colorChangingNightEnabled"];
+
+    [groupDefaults setBool:@YES.boolValue forKey:@"manualOverride"];
     
     [self updateUI];
 }

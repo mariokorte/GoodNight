@@ -59,7 +59,7 @@
     else{
         if([self invertScreenColours:NO]){
             [self setGammaWithRed:1.0f green:1.0f blue:1.0f];
-            [userDefaults setFloat:1.0f forKey:@"currentOrange"];
+            [groupDefaults setFloat:1.0f forKey:@"currentOrange"];
             [self autoChangeOrangenessIfNeededWithTransition:NO];
         }
     }
@@ -166,6 +166,7 @@
         switch (nightAction) {
             case SwitchToOrangeness:
                 [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
+                [groupDefaults setBool:NO forKey:@"manualOverride"];
             case KeepOrangenessEnabled:
                 nightModeWasEnabled = YES;
                 break;
@@ -176,22 +177,57 @@
     
 
     if (!nightModeWasEnabled){
+        TimeBasedAction action = KeepStandardEnabled;
+        float newOrangeLevel = 1.0f;
+        
         if ([groupDefaults boolForKey:@"colorChangingLocationEnabled"]) {
-            [self switchScreenTemperatureBasedOnLocation];
+            action = [self timeBasedActionForLocationWithNewOrangeLevel:&newOrangeLevel];
         } else if ([groupDefaults boolForKey:@"colorChangingEnabled"]){
-            TimeBasedAction autoAction = [self timeBasedActionForPrefix:@"auto"];
-            
-            switch (autoAction) {
+            action = [self timeBasedActionForPrefix:@"auto"];
+            switch (action) {
                 case SwitchToOrangeness:
-                    [self enableOrangenessWithDefaults:YES transition:YES];
+                case KeepOrangenessEnabled:
+                    newOrangeLevel = [groupDefaults floatForKey:@"maxOrange"];
                     break;
                 case SwitchToStandard:
-                    [self disableOrangeness];
-                    break;
+                case KeepStandardEnabled:
                 default:
+                    newOrangeLevel = 1.0f;
                     break;
             }
         }
+        
+        if ([groupDefaults boolForKey:@"manualOverride"] && [groupDefaults boolForKey:@"enabled"]){
+            if (action == SwitchToOrangeness){
+                [groupDefaults setBool:NO forKey:@"manualOverride"];
+            }
+            else{
+                return;
+            }
+        }
+        else if ([groupDefaults boolForKey:@"manualOverride"] && ![groupDefaults boolForKey:@"enabled"]){
+            if (action == SwitchToStandard){
+                [groupDefaults setBool:NO forKey:@"manualOverride"];
+            }
+            else{
+                return;
+            }
+        }
+        
+        switch (action) {
+            case SwitchToOrangeness:
+            case SwitchToStandard:
+                if (newOrangeLevel == 1.0f){
+                    [GammaController disableOrangeness];
+                }
+                else{
+                    [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:newOrangeLevel];
+                }
+                break;
+            default:
+                break;
+        }
+        
     }
     
     [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
@@ -325,18 +361,16 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)checkCompatibility{
-    void *libMobileGestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY);
-    CFStringRef (*MGCopyAnswer)(CFStringRef) = dlsym(libMobileGestalt, "MGCopyAnswer");
+    void *gestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY);
+    CFStringRef (*MGCopyAnswer)(CFStringRef) = (CFStringRef (*)(CFStringRef))(dlsym(gestalt, "MGCopyAnswer"));
     NSString *hwModelStr = CFBridgingRelease(MGCopyAnswer(CFSTR("HWModelStr")));
     
     if ([hwModelStr isEqualToString:@"J98aAP"] || [hwModelStr isEqualToString:@"J99aAP"]){ //iPadPro
         NSString *bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Unfortunately the iPad Pro is not yet supported by this Version of %@.", bundleName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Unfortunately the iPad Pro is not yet supported by this Version of %@.", bundleName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        //[alert show];
     }
-    
-    dlclose(libMobileGestalt);
 }
 
 + (void)enableDimness {
@@ -383,7 +417,8 @@ static NSOperationQueue *queue = nil;
     [GammaController disableOrangenessWithDefaults:YES key:@"enabled" transition:YES];
 }
 
-+ (void)switchScreenTemperatureBasedOnLocation {
+
++ (TimeBasedAction)timeBasedActionForLocationWithNewOrangeLevel:(float*)newOrangeLevel{
     float latitude = [groupDefaults floatForKey:@"colorChangingLocationLatitude"];
     float longitude = [groupDefaults floatForKey:@"colorChangingLocationLongitude"];
     
@@ -392,17 +427,30 @@ static NSOperationQueue *queue = nil;
     float maxOrangePercentage = maxOrange * 100;
     float orangeness = (calculate_interpolated_value(solarAngularElevation, 0, maxOrangePercentage) / 100);
     
+    float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
+    
     if(orangeness > 0) {
         float percent = orangeness / maxOrange;
         float diff = 1.0f - maxOrange;
-        [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:MIN(1.0f-percent*diff, 1.0f)];
+        *newOrangeLevel = MIN(1.0f-percent*diff, 1.0f);
     }
     else if (orangeness <= 0) {
-        [GammaController disableOrangeness];
+        *newOrangeLevel = 1.0f;
+    }
+    
+    if (currentOrangeLevel < *newOrangeLevel) {
+        return SwitchToStandard;
+    }
+    else if (currentOrangeLevel > *newOrangeLevel) {
+        return SwitchToOrangeness;
+    }
+    else if (*newOrangeLevel == 1.0f) {
+        return KeepStandardEnabled;
+    }
+    else{
+        return KeepOrangenessEnabled;
     }
 }
-
-
 
 + (TimeBasedAction)timeBasedActionForPrefix:(NSString*)autoOrNightPrefix{
     if (!autoOrNightPrefix || (![autoOrNightPrefix isEqualToString:@"auto"] && ![autoOrNightPrefix isEqualToString:@"night"])){
