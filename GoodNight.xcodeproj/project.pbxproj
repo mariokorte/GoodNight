@@ -7,16 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7547EF0D1C10723100768B1A /* GammaController.m in Sources */ = {isa = PBXBuildFile; fileRef = B96BB64E1B38D96600F1C3AE /* GammaController.m */; };
-		7547EF111C10730100768B1A /* Brightness.c in Sources */ = {isa = PBXBuildFile; fileRef = 926F71211C0CF39B0039A4A2 /* Brightness.c */; };
-		7547EF131C10730100768B1A /* Solar.c in Sources */ = {isa = PBXBuildFile; fileRef = 926F71241C0CF39B0039A4A2 /* Solar.c */; };
-		7547EF151C10730100768B1A /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 926F711E1C0CF3930039A4A2 /* NSDate+Extensions.m */; };
-		7547EF161C10769400768B1A /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 925B81201BE2BCE1003A6C4B /* NotificationCenter.framework */; };
-		759633F21C19D42C00BF29EE /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 759633F11C19D42C00BF29EE /* Defaults.plist */; };
-		759633F31C19D4A500BF29EE /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 759633F11C19D42C00BF29EE /* Defaults.plist */; };
+		32AFEC481C1B1B8A00142DD9 /* IOMobileFramebufferClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */; };
 		921810341BC1B1C300D32E92 /* CreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 921810331BC1B1C300D32E92 /* CreditsViewController.m */; };
 		921810371BC1B3C000D32E92 /* BrightnessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 921810361BC1B3C000D32E92 /* BrightnessViewController.m */; };
 		924EFA9B1BC16F1F00BF8CA6 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 924EFA9A1BC16F1F00BF8CA6 /* CustomViewController.m */; };
+		925B81211BE2BCE1003A6C4B /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 925B81201BE2BCE1003A6C4B /* NotificationCenter.framework */; };
 		925B81251BE2BCE1003A6C4B /* TodayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 925B81241BE2BCE1003A6C4B /* TodayViewController.m */; };
 		925B81281BE2BCE1003A6C4B /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925B81261BE2BCE1003A6C4B /* MainInterface.storyboard */; };
 		925B812C1BE2BCE1003A6C4B /* GoodNight Widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 925B811E1BE2BCE1003A6C4B /* GoodNight Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -60,10 +55,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		32AFEC461C1B1B8A00142DD9 /* IOMobileFramebufferClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOMobileFramebufferClient.h; sourceTree = "<group>"; };
+		32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOMobileFramebufferClient.m; sourceTree = "<group>"; };
 		511EBE611BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		511EBE621BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Storyboard.strings; sourceTree = "<group>"; };
 		511EBE631BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainInterface.strings; sourceTree = "<group>"; };
-		759633F11C19D42C00BF29EE /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		921810321BC1B1C300D32E92 /* CreditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreditsViewController.h; sourceTree = "<group>"; };
 		921810331BC1B1C300D32E92 /* CreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreditsViewController.m; sourceTree = "<group>"; };
 		921810351BC1B3C000D32E92 /* BrightnessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrightnessViewController.h; sourceTree = "<group>"; };
@@ -110,7 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7547EF161C10769400768B1A /* NotificationCenter.framework in Frameworks */,
+				925B81211BE2BCE1003A6C4B /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,6 +179,8 @@
 		926B68F91BC1B91D00F12297 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				32AFEC461C1B1B8A00142DD9 /* IOMobileFramebufferClient.h */,
+				32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */,
 				B96BB64D1B38D96600F1C3AE /* GammaController.h */,
 				B96BB64E1B38D96600F1C3AE /* GammaController.m */,
 			);
@@ -303,7 +301,6 @@
 		B9E536491B38D90D0097BF90 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				759633F11C19D42C00BF29EE /* Defaults.plist */,
 				926F71201C0CF39B0039A4A2 /* Brightness */,
 				926F71231C0CF39B0039A4A2 /* Solar */,
 				921924341BCDC11800254487 /* NSDate+Extensions */,
@@ -366,28 +363,22 @@
 				TargetAttributes = {
 					925B811D1BE2BCE1003A6C4B = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = 3E46UDD33Y;
+						DevelopmentTeam = 9QKLXG4845;
 						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
 							com.apple.Keychain = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
 					B9E536451B38D90D0097BF90 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 3E46UDD33Y;
+						DevelopmentTeam = 9QKLXG4845;
 						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
 							com.apple.Keychain = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -417,7 +408,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				759633F31C19D4A500BF29EE /* Defaults.plist in Resources */,
 				925B81281BE2BCE1003A6C4B /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,7 +416,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				759633F21C19D42C00BF29EE /* Defaults.plist in Resources */,
 				92F23ABF1BD72ADD00A097CB /* LaunchScreen.storyboard in Resources */,
 				B9E536561B38D90D0097BF90 /* Assets.xcassets in Resources */,
 				92F23AC21BD72AE700A097CB /* Storyboard.storyboard in Resources */,
@@ -440,10 +429,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7547EF111C10730100768B1A /* Brightness.c in Sources */,
-				7547EF131C10730100768B1A /* Solar.c in Sources */,
-				7547EF151C10730100768B1A /* NSDate+Extensions.m in Sources */,
-				7547EF0D1C10723100768B1A /* GammaController.m in Sources */,
 				925B81251BE2BCE1003A6C4B /* TodayViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,6 +437,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32AFEC481C1B1B8A00142DD9 /* IOMobileFramebufferClient.m in Sources */,
 				927B86141BD720E60091AF24 /* ForceTouchController.m in Sources */,
 				9296029F1BD1B89100CDEC52 /* InitialViewController.m in Sources */,
 				B9E536511B38D90D0097BF90 /* MainViewController.m in Sources */,
@@ -526,7 +512,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -558,7 +545,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = GoodNight/GoodNight.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -571,7 +558,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GoodNight/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = xyz.korte.goodnight;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adatech.goodnight;
 				PRODUCT_NAME = GoodNight;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -591,7 +578,7 @@
 				INFOPLIST_FILE = "GoodNight Widget/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "xyz.korte.goodnight.GoodNight-Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adatech.goodnight.GoodNight-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -638,7 +625,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "xyz.korte.goodnight.GoodNight-Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.adatech.goodnight.GoodNight-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -664,6 +651,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -685,7 +673,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -710,7 +697,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GoodNight/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = xyz.korte.goodnight;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adatech.goodnight;
 				PRODUCT_NAME = GoodNight;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
