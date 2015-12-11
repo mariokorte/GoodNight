@@ -16,48 +16,39 @@
 
 @implementation GammaController
 
-+(BOOL)invertScreenColours:(BOOL)invert{
-    typedef enum {
-        IOMobileFramebufferColorModeNormal = 0,
-        IOMobileFramebufferColorModeInverted,
-        IOMobileFramebufferColorModeGrayscale,
-        IOMobileFramebuffeColorModeGrayscaleIncreaseContrast,
-        IOMobileFramebufferColorModeInvertedGreyscale
-    } IOMobileFramebufferColorMode;
-    
-    IOMobileFramebufferConnection fb = NULL;
-    
-    void *IOMobileFramebuffer = dlopen("/System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/IOMobileFramebuffer", RTLD_LAZY);
++ (BOOL)invertScreenColours:(BOOL)invert {
+    void *IOMobileFramebuffer = dlopen(IOMFB_PATH, RTLD_LAZY);
     NSParameterAssert(IOMobileFramebuffer);
     
-    IOMobileFramebufferReturn (*IOMobileFramebufferGetMainDisplay)(IOMobileFramebufferConnection *connection) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetMainDisplay");
-    NSParameterAssert(IOMobileFramebufferGetMainDisplay);
+    if (_framebufferConnection == NULL) {
+        IOMobileFramebufferReturn (*IOMobileFramebufferGetMainDisplay)(IOMobileFramebufferConnection *connection) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetMainDisplay");
+        NSParameterAssert(IOMobileFramebufferGetMainDisplay);
+        IOMobileFramebufferGetMainDisplay(&_framebufferConnection);
+    }
     
-    IOMobileFramebufferGetMainDisplay(&fb);
+    IOMobileFramebufferColorRemapMode mode = 0;
     
-    IOMobileFramebufferReturn (*IOMobileFramebufferGetColorRemapMode)(IOMobileFramebufferConnection connection, IOMobileFramebufferColorMode *mode) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetColorRemapMode");
+    IOMobileFramebufferReturn (*IOMobileFramebufferGetColorRemapMode)(IOMobileFramebufferConnection connection, IOMobileFramebufferColorRemapMode *mode) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetColorRemapMode");
     NSParameterAssert(IOMobileFramebufferGetColorRemapMode);
-    IOMobileFramebufferColorMode mode;
-    IOMobileFramebufferGetColorRemapMode(fb, &mode);
-    
-    IOMobileFramebufferReturn (*IOMobileFramebufferSetColorRemapMode)(IOMobileFramebufferConnection connection, IOMobileFramebufferColorMode mode) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferSetColorRemapMode");
+    IOMobileFramebufferReturn (*IOMobileFramebufferSetColorRemapMode)(IOMobileFramebufferConnection connection, IOMobileFramebufferColorRemapMode mode) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferSetColorRemapMode");
     NSParameterAssert(IOMobileFramebufferSetColorRemapMode);
     
-    IOMobileFramebufferSetColorRemapMode(fb, invert ? IOMobileFramebufferColorModeInverted : IOMobileFramebufferColorModeNormal);
+    IOMobileFramebufferGetColorRemapMode(_framebufferConnection, &mode);
+    IOMobileFramebufferSetColorRemapMode(_framebufferConnection, invert ? IOMobileFramebufferColorRemapModeInverted : IOMobileFramebufferColorRemapModeNormal);
     
     dlclose(IOMobileFramebuffer);
     
-    return invert ? mode != IOMobileFramebufferColorModeInverted : mode != IOMobileFramebufferColorModeNormal;
+    return invert ? mode != IOMobileFramebufferColorRemapModeInverted : mode != IOMobileFramebufferColorRemapModeNormal;
 }
 
-+(void)setDarkroomEnabled:(BOOL)enable{
++ (void)setDarkroomEnabled:(BOOL)enable {
     if (enable){
         if ([self invertScreenColours:YES]){
             [self setGammaWithRed:1.0f green:0.0f blue:0.0f];
         }
     }
-    else{
-        if([self invertScreenColours:NO]){
+    else {
+        if ([self invertScreenColours:NO]) {
             [self setGammaWithRed:1.0f green:1.0f blue:1.0f];
             [groupDefaults setFloat:1.0f forKey:@"currentOrange"];
             [self autoChangeOrangenessIfNeededWithTransition:NO];
@@ -75,15 +66,14 @@
     unsigned bs = blue * 0x100;
     NSParameterAssert(bs <= 0x100);
     
-    IOMobileFramebufferConnection fb = NULL;
-    
-    void *IOMobileFramebuffer = dlopen("/System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/IOMobileFramebuffer", RTLD_LAZY);
+    void *IOMobileFramebuffer = dlopen(IOMFB_PATH, RTLD_LAZY);
     NSParameterAssert(IOMobileFramebuffer);
     
-    IOMobileFramebufferReturn (*IOMobileFramebufferGetMainDisplay)(IOMobileFramebufferConnection *connection) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetMainDisplay");
-    NSParameterAssert(IOMobileFramebufferGetMainDisplay);
-    
-    IOMobileFramebufferGetMainDisplay(&fb);
+    if (_framebufferConnection == NULL) {
+        IOMobileFramebufferReturn (*IOMobileFramebufferGetMainDisplay)(IOMobileFramebufferConnection *connection) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetMainDisplay");
+        NSParameterAssert(IOMobileFramebufferGetMainDisplay);
+        IOMobileFramebufferGetMainDisplay(&_framebufferConnection);
+    }
     
     uint32_t data[0xc0c / sizeof(uint32_t)];
     memset(data, 0, sizeof(data));
@@ -97,7 +87,7 @@
         IOMobileFramebufferReturn (*IOMobileFramebufferGetGammaTable)(IOMobileFramebufferConnection connection, void *data) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetGammaTable");
         NSParameterAssert(IOMobileFramebufferGetGammaTable);
         
-        IOMobileFramebufferGetGammaTable(fb, data);
+        IOMobileFramebufferGetGammaTable(_framebufferConnection, data);
         
         file = fopen([filePath UTF8String], "wb");
         NSParameterAssert(file != NULL);
@@ -127,7 +117,7 @@
     IOMobileFramebufferReturn (*IOMobileFramebufferSetGammaTable)(IOMobileFramebufferConnection connection, void *data) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferSetGammaTable");
     NSParameterAssert(IOMobileFramebufferSetGammaTable);
     
-    IOMobileFramebufferSetGammaTable(fb, data);
+    IOMobileFramebufferSetGammaTable(_framebufferConnection, data);
     
     dlclose(IOMobileFramebuffer);
 }
@@ -174,7 +164,6 @@
                 break;
         }
     }
-    
 
     if (!nightModeWasEnabled){
         TimeBasedAction action = KeepStandardEnabled;
@@ -267,11 +256,10 @@
     [groupDefaults synchronize];
 }
 
-static NSOperationQueue *queue = nil;
-
 + (void)setGammaWithTransitionFrom:(float)oldPercentOrange to:(float)newPercentOrange {
-    
-    if (!queue){
+    static NSOperationQueue *queue = nil;
+
+    if (!queue) {
         queue = [NSOperationQueue new];
     }
     
@@ -330,7 +318,7 @@ static NSOperationQueue *queue = nil;
 }
 
 + (BOOL)wakeUpScreenIfNeeded {
-    void *SpringBoardServices = dlopen("/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices", RTLD_LAZY);
+    void *SpringBoardServices = dlopen(SBS_PATH, RTLD_LAZY);
     NSParameterAssert(SpringBoardServices);
     mach_port_t (*SBSSpringBoardServerPort)() = dlsym(SpringBoardServices, "SBSSpringBoardServerPort");
     NSParameterAssert(SBSSpringBoardServerPort);
@@ -360,17 +348,21 @@ static NSOperationQueue *queue = nil;
     //[alert show];
 }
 
-+ (void)checkCompatibility{
-    void *gestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY);
-    CFStringRef (*MGCopyAnswer)(CFStringRef) = (CFStringRef (*)(CFStringRef))(dlsym(gestalt, "MGCopyAnswer"));
++ (void)checkCompatibility {
+    void *libMobileGestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_GLOBAL | RTLD_LAZY);
+    NSParameterAssert(libMobileGestalt);
+    CFStringRef (*MGCopyAnswer)(CFStringRef model) = dlsym(libMobileGestalt, "MGCopyAnswer");
+    NSParameterAssert(MGCopyAnswer);
     NSString *hwModelStr = CFBridgingRelease(MGCopyAnswer(CFSTR("HWModelStr")));
     
-    if ([hwModelStr isEqualToString:@"J98aAP"] || [hwModelStr isEqualToString:@"J99aAP"]){ //iPadPro
+    if ([hwModelStr isEqualToString:@"J98aAP"] || [hwModelStr isEqualToString:@"J99aAP"]){
         NSString *bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
-        
+    
         //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Unfortunately the iPad Pro is not yet supported by this Version of %@.", bundleName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         //[alert show];
     }
+
+    dlclose(libMobileGestalt);
 }
 
 + (void)enableDimness {
@@ -493,7 +485,7 @@ static NSOperationQueue *queue = nil;
 }
 
 + (void)suspendApp {
-    void *SpringBoardServices = dlopen("/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices", RTLD_LAZY);
+    void *SpringBoardServices = dlopen(SBS_PATH, RTLD_LAZY);
     NSParameterAssert(SpringBoardServices);
     mach_port_t (*SBSSpringBoardServerPort)() = dlsym(SpringBoardServices, "SBSSpringBoardServerPort");
     NSParameterAssert(SBSSpringBoardServerPort);
