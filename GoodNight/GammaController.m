@@ -309,7 +309,7 @@
 }
 
 + (void)enableDimness {
-    float dimLevel = [userDefaults floatForKey:@"dimLevel"];
+    float dimLevel = [groupDefaults floatForKey:@"dimLevel"];
     [self setGammaWithRed:dimLevel green:dimLevel blue:dimLevel];
     [groupDefaults setBool:YES forKey:@"dimEnabled"];
     [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
@@ -317,9 +317,9 @@
 }
 
 + (void)setGammaWithCustomValues {
-    float redValue = [userDefaults floatForKey:@"redValue"];
-    float greenValue = [userDefaults floatForKey:@"greenValue"];
-    float blueValue = [userDefaults floatForKey:@"blueValue"];
+    float redValue = [groupDefaults floatForKey:@"redValue"];
+    float greenValue = [groupDefaults floatForKey:@"greenValue"];
+    float blueValue = [groupDefaults floatForKey:@"blueValue"];
     [self setGammaWithRed:redValue green:greenValue blue:blueValue];
     [groupDefaults setBool:YES forKey:@"rgbEnabled"];
     [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
@@ -430,7 +430,7 @@
     va_start(args, firstKey);
     for (NSString *arg = firstKey; arg != nil; arg = va_arg(args, NSString*))
     {
-        if ([userDefaults boolForKey:arg]){
+        if ([groupDefaults boolForKey:arg]){
             adjustmentsEnabled = YES;
             break;
         }

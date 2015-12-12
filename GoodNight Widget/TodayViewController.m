@@ -56,9 +56,11 @@
     }
     else{
         [GammaController enableOrangenessWithDefaults:YES transition:YES];
+        [groupDefaults setBool:NO forKey:@"dimEnabled"];
+        [groupDefaults setBool:NO forKey:@"rgbEnabled"];
     }
 
-    [groupDefaults setBool:@YES.boolValue forKey:@"manualOverride"];
+    [groupDefaults setBool:YES forKey:@"manualOverride"];
     
     [self updateUI];
 }

@@ -175,9 +175,9 @@
 
 
 + (void)showFailedAlertWithKey:(NSString *)key {
-    [userDefaults setObject:@"1" forKey:@"keyEnabled"];
-    [userDefaults setBool:NO forKey:key];
-    [userDefaults synchronize];
+    [groupDefaults setObject:@"1" forKey:@"keyEnabled"];
+    [groupDefaults setBool:NO forKey:key];
+    [groupDefaults synchronize];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You may only use one adjustment at a time. Please disable any other adjustments before enabling this one." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alert show];
 }
