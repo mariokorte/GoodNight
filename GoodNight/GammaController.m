@@ -122,11 +122,11 @@
         TimeBasedAction nightAction = [self timeBasedActionForPrefix:@"night"];
         switch (nightAction) {
             case SwitchToOrangeness:
-                [GammaController enableOrangenessWithDefaults:YES transition:YES orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
-                [groupDefaults setBool:NO forKey:@"manualOverride"];
                 [groupDefaults setBool:NO forKey:@"dimEnabled"];
                 [groupDefaults setBool:NO forKey:@"rgbEnabled"];
+                //Fallthrough intended
             case KeepOrangenessEnabled:
+                [self enableOrangenessWithDefaults:YES transition:transition orangeLevel:[userDefaults floatForKey:@"nightOrange"]];
                 nightModeWasEnabled = YES;
                 break;
             default:
@@ -216,7 +216,7 @@
     }
     if (defaults == YES) {
         [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
-        [groupDefaults setBool:YES forKey:@"enabled"];
+        [groupDefaults setBool:(orangeLevel==1.0f)?NO:YES forKey:@"enabled"];
     }
     [groupDefaults setObject:@"0" forKey:@"keyEnabled"];
 
@@ -268,8 +268,8 @@
     [queue addOperation:operation];
 }
 
-+ (void)disableOrangenessWithDefaults:(BOOL)defaults key:(NSString *)key transition:(BOOL)transition {
-    [self wakeUpScreenIfNeeded];
++ (void)disableGammaWithTransition:(BOOL)transition {
+
     if (transition == YES) {
         float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
         [self setGammaWithTransitionFrom:currentOrangeLevel to:1.0];
@@ -277,10 +277,7 @@
     else {
         [self setGammaWithOrangeness:1.0];
     }
-    if (defaults == YES) {
-        [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
-        [groupDefaults setBool:NO forKey:key];
-    }
+    [groupDefaults setObject:[NSDate date] forKey:@"lastAutoChangeDate"];
     [groupDefaults setFloat:1.0 forKey:@"currentOrange"];
     [groupDefaults synchronize];
 }
@@ -328,11 +325,14 @@
 }
 
 + (void)disableColorAdjustment {
-    [self disableOrangenessWithDefaults:YES key:@"rgbEnabled" transition:NO];
+    [self disableGammaWithTransition:NO];
+    [userDefaults setBool:NO forKey:@"rgbEnabled"];
+
 }
 
 + (void)disableDimness {
-    [self disableOrangenessWithDefaults:YES key:@"dimEnabled" transition:NO];
+    [self disableGammaWithTransition:NO];
+    [userDefaults setBool:NO forKey:@"dimEnabled"];
 }
 
 + (void)disableOrangeness {
@@ -340,9 +340,11 @@
     if (!(currentOrangeLevel < 1.0f)) {
         return;
     }
-    [self disableOrangenessWithDefaults:YES key:@"enabled" transition:YES];
+    
+    [self wakeUpScreenIfNeeded];
+    [self disableGammaWithTransition:YES];
+    [userDefaults setBool:NO forKey:@"enabled"];
 }
-
 
 + (TimeBasedAction)timeBasedActionForLocationWithNewOrangeLevel:(float*)newOrangeLevel{
     float latitude = [groupDefaults floatForKey:@"colorChangingLocationLatitude"];
@@ -351,7 +353,10 @@
     double solarAngularElevation = solar_elevation([[NSDate date] timeIntervalSince1970], latitude, longitude);
     float maxOrange = [groupDefaults floatForKey:@"maxOrange"];
     float maxOrangePercentage = maxOrange * 100;
-    float orangeness = (calculate_interpolated_value(solarAngularElevation, 0, maxOrangePercentage) / 100);
+    float dayOrange = [userDefaults floatForKey:@"dayOrange"];
+    float dayOrangePercentage = dayOrange * 100;
+    
+    float orangeness = (calculate_interpolated_value(solarAngularElevation, dayOrangePercentage, maxOrangePercentage) / 100);
     
     float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
     
