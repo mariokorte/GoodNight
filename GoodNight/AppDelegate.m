@@ -51,9 +51,11 @@
 }
 
 - (void)registerForNotifications {
-    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    [app registerUserNotificationSettings:settings];
+    if ([app respondsToSelector:@selector(registerUserNotificationSettings:)]){
+        UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        [app registerUserNotificationSettings:settings];
+    }
 }
 
 + (void)updateNotifications {
