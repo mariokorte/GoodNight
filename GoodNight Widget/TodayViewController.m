@@ -19,7 +19,7 @@
     [groupDefaults registerDefaults:appDefaults];
     
     self.preferredContentSize = CGSizeMake(0, 110);
-    
+
     self.toggleButton.layer.cornerRadius = 7;
     self.toggleButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
     self.toggleButton.layer.masksToBounds = YES;
@@ -46,6 +46,7 @@
 - (void)updateUI {
     BOOL enabled = [groupDefaults boolForKey:@"enabled"];
     self.toggleButton.selected = enabled;
+    self.toggleButton.layer.backgroundColor = enabled ? [[UIColor colorWithRed:0.8f green:0.495f blue:0.09f alpha:1.0] CGColor] : [[UIColor grayColor] CGColor];
 }
 
 - (IBAction)toggleButtonClicked {
