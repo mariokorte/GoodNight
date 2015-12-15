@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		32AFEC481C1B1B8A00142DD9 /* IOMobileFramebufferClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */; };
+		75885DCB1C2026B700B57791 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75885DCA1C2026B700B57791 /* Defaults.plist */; };
+		75885DCE1C2027F400B57791 /* MobileGestaltClient.m in Sources */ = {isa = PBXBuildFile; fileRef = ACCE45A41C1B750B00CD094C /* MobileGestaltClient.m */; };
+		75885DCF1C2027F400B57791 /* SpringBoardServicesClient.m in Sources */ = {isa = PBXBuildFile; fileRef = ACCE45A11C1B6D3100CD094C /* SpringBoardServicesClient.m */; };
+		75885DD01C2027F400B57791 /* IOMobileFramebufferClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */; };
+		75885DD11C2027F400B57791 /* GammaController.m in Sources */ = {isa = PBXBuildFile; fileRef = B96BB64E1B38D96600F1C3AE /* GammaController.m */; };
+		75885DD21C2027F400B57791 /* Brightness.c in Sources */ = {isa = PBXBuildFile; fileRef = 926F71211C0CF39B0039A4A2 /* Brightness.c */; };
+		75885DD31C2027F400B57791 /* Solar.c in Sources */ = {isa = PBXBuildFile; fileRef = 926F71241C0CF39B0039A4A2 /* Solar.c */; };
+		75885DD41C20280C00B57791 /* NSDate+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 926F711E1C0CF3930039A4A2 /* NSDate+Extensions.m */; };
+		75885DD51C20281600B57791 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75885DCA1C2026B700B57791 /* Defaults.plist */; };
 		921810341BC1B1C300D32E92 /* CreditsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 921810331BC1B1C300D32E92 /* CreditsViewController.m */; };
 		921810371BC1B3C000D32E92 /* BrightnessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 921810361BC1B3C000D32E92 /* BrightnessViewController.m */; };
 		924EFA9B1BC16F1F00BF8CA6 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 924EFA9A1BC16F1F00BF8CA6 /* CustomViewController.m */; };
@@ -62,6 +71,7 @@
 		511EBE611BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		511EBE621BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Storyboard.strings; sourceTree = "<group>"; };
 		511EBE631BEBB1E200D5DAF7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		75885DCA1C2026B700B57791 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Defaults.plist; path = GoodNight/Defaults.plist; sourceTree = "<group>"; };
 		921810321BC1B1C300D32E92 /* CreditsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreditsViewController.h; sourceTree = "<group>"; };
 		921810331BC1B1C300D32E92 /* CreditsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreditsViewController.m; sourceTree = "<group>"; };
 		921810351BC1B3C000D32E92 /* BrightnessViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrightnessViewController.h; sourceTree = "<group>"; };
@@ -90,7 +100,7 @@
 		92BBC7911BB77C8300AA4914 /* GoodNight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = GoodNight.entitlements; sourceTree = "<group>"; };
 		92F23AC01BD72ADD00A097CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		92F23AC31BD72AE700A097CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Storyboard.storyboard; sourceTree = "<group>"; };
-		92F4101C1BD0730A003AABB8 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		92F4101C1BD0730A003AABB8 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = GoodNight/PrefixHeader.pch; sourceTree = "<group>"; };
 		ACCE45A01C1B6D3100CD094C /* SpringBoardServicesClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpringBoardServicesClient.h; sourceTree = "<group>"; };
 		ACCE45A11C1B6D3100CD094C /* SpringBoardServicesClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpringBoardServicesClient.m; sourceTree = "<group>"; };
 		ACCE45A31C1B750B00CD094C /* MobileGestaltClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileGestaltClient.h; sourceTree = "<group>"; };
@@ -126,6 +136,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		75885DCC1C2027A500B57791 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				926B68F91BC1B91D00F12297 /* Core */,
+				75885DCD1C2027B900B57791 /* Supporting Files */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
+		};
+		75885DCD1C2027B900B57791 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				926F71201C0CF39B0039A4A2 /* Brightness */,
+				926F71231C0CF39B0039A4A2 /* Solar */,
+				921924341BCDC11800254487 /* NSDate+Extensions */,
+				92F4101C1BD0730A003AABB8 /* PrefixHeader.pch */,
+				75885DCA1C2026B700B57791 /* Defaults.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		75885DD61C20283400B57791 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				925B81301BE2BD0A003A6C4B /* GoodNight Widget.entitlements */,
+				925B81291BE2BCE1003A6C4B /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		75885DD71C20284300B57791 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				925B81261BE2BCE1003A6C4B /* MainInterface.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
 		921924341BCDC11800254487 /* NSDate+Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +181,7 @@
 				926F711E1C0CF3930039A4A2 /* NSDate+Extensions.m */,
 			);
 			name = "NSDate+Extensions";
+			path = GoodNight;
 			sourceTree = "<group>";
 		};
 		925B811F1BE2BCE1003A6C4B /* Frameworks */ = {
@@ -148,9 +197,8 @@
 			children = (
 				925B81231BE2BCE1003A6C4B /* TodayViewController.h */,
 				925B81241BE2BCE1003A6C4B /* TodayViewController.m */,
-				925B81261BE2BCE1003A6C4B /* MainInterface.storyboard */,
-				925B81301BE2BD0A003A6C4B /* GoodNight Widget.entitlements */,
-				925B81291BE2BCE1003A6C4B /* Info.plist */,
+				75885DD71C20284300B57791 /* Storyboards */,
+				75885DD61C20283400B57791 /* Supporting Files */,
 			);
 			path = "GoodNight Widget";
 			sourceTree = "<group>";
@@ -195,6 +243,7 @@
 				B96BB64E1B38D96600F1C3AE /* GammaController.m */,
 			);
 			name = Core;
+			path = GoodNight;
 			sourceTree = "<group>";
 		};
 		926F71201C0CF39B0039A4A2 /* Brightness */ = {
@@ -278,6 +327,7 @@
 		B9E5363D1B38D90D0097BF90 = {
 			isa = PBXGroup;
 			children = (
+				75885DCC1C2027A500B57791 /* Shared */,
 				B9E536481B38D90D0097BF90 /* GoodNight */,
 				925B81221BE2BCE1003A6C4B /* GoodNight Widget */,
 				925B811F1BE2BCE1003A6C4B /* Frameworks */,
@@ -299,7 +349,6 @@
 			children = (
 				B9E5364C1B38D90D0097BF90 /* AppDelegate.h */,
 				B9E5364D1B38D90D0097BF90 /* AppDelegate.m */,
-				926B68F91BC1B91D00F12297 /* Core */,
 				927B86151BD7239E0091AF24 /* 3D Touch */,
 				929602A61BD1C26F00CDEC52 /* User Interface */,
 				929602A71BD1C2DE00CDEC52 /* Storyboards */,
@@ -311,13 +360,9 @@
 		B9E536491B38D90D0097BF90 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				926F71201C0CF39B0039A4A2 /* Brightness */,
-				926F71231C0CF39B0039A4A2 /* Solar */,
-				921924341BCDC11800254487 /* NSDate+Extensions */,
 				92BBC7911BB77C8300AA4914 /* GoodNight.entitlements */,
 				B9E536551B38D90D0097BF90 /* Assets.xcassets */,
 				B9E5365A1B38D90D0097BF90 /* Info.plist */,
-				92F4101C1BD0730A003AABB8 /* PrefixHeader.pch */,
 				B9E5364A1B38D90D0097BF90 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -373,8 +418,11 @@
 				TargetAttributes = {
 					925B811D1BE2BCE1003A6C4B = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = 3E46UDD33Y;
+						DevelopmentTeam = RZ4ZD385GT;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 0;
 							};
@@ -382,8 +430,11 @@
 					};
 					B9E536451B38D90D0097BF90 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 3E46UDD33Y;
+						DevelopmentTeam = RZ4ZD385GT;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -418,6 +469,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75885DD51C20281600B57791 /* Defaults.plist in Resources */,
 				925B81281BE2BCE1003A6C4B /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,6 +478,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75885DCB1C2026B700B57791 /* Defaults.plist in Resources */,
 				92F23ABF1BD72ADD00A097CB /* LaunchScreen.storyboard in Resources */,
 				B9E536561B38D90D0097BF90 /* Assets.xcassets in Resources */,
 				92F23AC21BD72AE700A097CB /* Storyboard.storyboard in Resources */,
@@ -439,6 +492,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75885DD41C20280C00B57791 /* NSDate+Extensions.m in Sources */,
+				75885DCE1C2027F400B57791 /* MobileGestaltClient.m in Sources */,
+				75885DCF1C2027F400B57791 /* SpringBoardServicesClient.m in Sources */,
+				75885DD01C2027F400B57791 /* IOMobileFramebufferClient.m in Sources */,
+				75885DD11C2027F400B57791 /* GammaController.m in Sources */,
+				75885DD21C2027F400B57791 /* Brightness.c in Sources */,
+				75885DD31C2027F400B57791 /* Solar.c in Sources */,
 				925B81251BE2BCE1003A6C4B /* TodayViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,6 +615,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = GoodNight/GoodNight.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -569,7 +630,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GoodNight/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.adatech.goodnight;
+				PRODUCT_BUNDLE_IDENTIFIER = de.mariokorte1.goodnight;
 				PRODUCT_NAME = GoodNight;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -581,6 +642,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = "GoodNight Widget/GoodNight Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -588,7 +650,7 @@
 				INFOPLIST_FILE = "GoodNight Widget/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adatech.goodnight.GoodNight-Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.mariokorte1.goodnight.GoodNight-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -614,6 +676,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "GoodNight Widget/GoodNight Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -634,7 +697,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.adatech.goodnight.GoodNight-Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.mariokorte1.goodnight.GoodNight-Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -691,6 +754,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = GoodNight/GoodNight.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -705,7 +769,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/GoodNight/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.adatech.goodnight;
+				PRODUCT_BUNDLE_IDENTIFIER = de.mariokorte1.goodnight;
 				PRODUCT_NAME = GoodNight;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

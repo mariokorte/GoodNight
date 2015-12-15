@@ -108,9 +108,9 @@
     
     self.enabledSwitch.onTintColor = [UIColor colorWithRed:0.9f green:((2.0f-orange)/2.0f)*0.9f blue:(1.0f-orange)*0.9f alpha:1.0];
 
-    self.colorChangingEnabledSwitch.on = [userDefaults boolForKey:@"colorChangingEnabled"];
-    self.colorChangingLocationBasedSwitch.on = [userDefaults boolForKey:@"colorChangingLocationEnabled"];
-    self.colorChangingNightModeSwitch.on = [userDefaults boolForKey:@"colorChangingNightEnabled"];
+    self.colorChangingEnabledSwitch.on = [groupDefaults boolForKey:@"colorChangingEnabled"];
+    self.colorChangingLocationBasedSwitch.on = [groupDefaults boolForKey:@"colorChangingLocationEnabled"];
+    self.colorChangingNightModeSwitch.on = [groupDefaults boolForKey:@"colorChangingNightEnabled"];
     
     self.enabledSwitch.enabled = !(self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on);
     self.colorChangingNightModeSwitch.enabled = self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on;
@@ -324,7 +324,7 @@
         [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
         
         [self.enabledSwitch setOn:NO animated:YES];
-        [userDefaults setBool:NO forKey:@"enabled"];
+        [groupDefaults setBool:NO forKey:@"enabled"];
         [GammaController disableOrangeness];
     }
     
@@ -401,7 +401,7 @@
         [groupDefaults setBool:NO forKey:@"colorChangingNightEnabled"];
         
         [self.enabledSwitch setOn:NO animated:YES];
-        [userDefaults setBool:NO forKey:@"enabled"];
+        [groupDefaults setBool:NO forKey:@"enabled"];
         [GammaController disableOrangeness];
     }
     
@@ -431,19 +431,19 @@
 }
 
 - (IBAction)resetSlider {
-    [userDefaults setFloat:0.3111111111f forKey:@"maxOrange"];
-    [userDefaults setFloat:1.0f forKey:@"dayOrange"];
-    [userDefaults setFloat:0.0f forKey:@"nightOrange"];
+    [groupDefaults setFloat:0.3111111111f forKey:@"maxOrange"];
+    [groupDefaults setFloat:1.0f forKey:@"dayOrange"];
+    [groupDefaults setFloat:0.0f forKey:@"nightOrange"];
     
     switch (self.timeOfDaySegmentedControl.selectedSegmentIndex) {
         case 0:
-            self.orangeSlider.value = [userDefaults floatForKey:@"dayOrange"];
+            self.orangeSlider.value = [groupDefaults floatForKey:@"dayOrange"];
             break;
         case 1:
-            self.orangeSlider.value = [userDefaults floatForKey:@"maxOrange"];
+            self.orangeSlider.value = [groupDefaults floatForKey:@"maxOrange"];
             break;
         case 2:
-            self.orangeSlider.value = [userDefaults floatForKey:@"nightOrange"];
+            self.orangeSlider.value = [groupDefaults floatForKey:@"nightOrange"];
             break;
     }
 

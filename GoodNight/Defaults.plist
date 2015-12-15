@@ -22,12 +22,16 @@
 	<false/>
 	<key>maxOrange</key>
 	<real>0.3111111111</real>
+	<key>nightOrange</key>
+	<integer>0</integer>
+	<key>dayOrange</key>
+	<integer>1</integer>
 	<key>currentOrange</key>
-	<real>1</real>
+	<integer>1</integer>
 	<key>colorChangingEnabled</key>
 	<false/>
 	<key>lastAutoChangeDate</key>
-	<date>1-01-01T00:07:33Z</date>
+	<date>0000-12-30T00:00:00Z</date>
 	<key>autoStartHour</key>
 	<integer>19</integer>
 	<key>autoStartMinute</key>
@@ -65,6 +69,6 @@
 	<key>keyEnabled</key>
 	<string>0</string>
 	<key>lastBackgroundCheck</key>
-	<date>1-01-01T00:07:33Z</date>
+	<date>0000-12-30T00:00:00Z</date>
 </dict>
 </plist>

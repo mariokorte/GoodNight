@@ -126,7 +126,7 @@
                 [groupDefaults setBool:NO forKey:@"rgbEnabled"];
                 //Fallthrough intended
             case KeepOrangenessEnabled:
-                [self enableOrangenessWithDefaults:YES transition:transition orangeLevel:[userDefaults floatForKey:@"nightOrange"]];
+                [self enableOrangenessWithDefaults:YES transition:transition orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
                 nightModeWasEnabled = YES;
                 break;
             default:
@@ -150,7 +150,7 @@
                 case SwitchToStandard:
                 case KeepStandardEnabled:
                 default:
-                    newOrangeLevel = 1.0f;
+                    newOrangeLevel = [groupDefaults floatForKey:@"dayOrange"];
                     break;
             }
         }
@@ -326,13 +326,13 @@
 
 + (void)disableColorAdjustment {
     [self disableGammaWithTransition:NO];
-    [userDefaults setBool:NO forKey:@"rgbEnabled"];
+    [groupDefaults setBool:NO forKey:@"rgbEnabled"];
 
 }
 
 + (void)disableDimness {
     [self disableGammaWithTransition:NO];
-    [userDefaults setBool:NO forKey:@"dimEnabled"];
+    [groupDefaults setBool:NO forKey:@"dimEnabled"];
 }
 
 + (void)disableOrangeness {
@@ -343,7 +343,7 @@
     
     [self wakeUpScreenIfNeeded];
     [self disableGammaWithTransition:YES];
-    [userDefaults setBool:NO forKey:@"enabled"];
+    [groupDefaults setBool:NO forKey:@"enabled"];
 }
 
 + (TimeBasedAction)timeBasedActionForLocationWithNewOrangeLevel:(float*)newOrangeLevel{
@@ -353,7 +353,7 @@
     double solarAngularElevation = solar_elevation([[NSDate date] timeIntervalSince1970], latitude, longitude);
     float maxOrange = [groupDefaults floatForKey:@"maxOrange"];
     float maxOrangePercentage = maxOrange * 100;
-    float dayOrange = [userDefaults floatForKey:@"dayOrange"];
+    float dayOrange = [groupDefaults floatForKey:@"dayOrange"];
     float dayOrangePercentage = dayOrange * 100;
     
     float orangeness = (calculate_interpolated_value(solarAngularElevation, dayOrangePercentage, maxOrangePercentage) / 100);
@@ -361,9 +361,7 @@
     float currentOrangeLevel = [groupDefaults floatForKey:@"currentOrange"];
     
     if(orangeness > 0) {
-        float percent = orangeness / maxOrange;
-        float diff = 1.0f - maxOrange;
-        *newOrangeLevel = MIN(1.0f-percent*diff, 1.0f);
+        *newOrangeLevel = MIN(orangeness, 1.0f);
     }
     else if (orangeness <= 0) {
         *newOrangeLevel = 1.0f;
@@ -375,7 +373,7 @@
     else if (currentOrangeLevel > *newOrangeLevel) {
         return SwitchToOrangeness;
     }
-    else if (*newOrangeLevel == 1.0f) {
+    else if (*newOrangeLevel == [groupDefaults floatForKey:@"dayOrange"]) {
         return KeepStandardEnabled;
     }
     else{
