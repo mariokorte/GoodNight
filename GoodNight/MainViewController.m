@@ -69,17 +69,14 @@
     [self updateUI];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
-- (void)applicationWillEnterForeground:(NSNotification *)notification {
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
     [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
-    //Update the header for current temperature
-    //Update the footer for last updated background mode if user keeps app open at this level
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationNone];
-    [self.currentOrangeSlider setValue:[groupDefaults floatForKey:@"currentOrange"] animated:YES];
+    [self updateUI];
 }
 
 - (void)updateUI {
