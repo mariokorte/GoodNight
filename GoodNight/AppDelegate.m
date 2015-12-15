@@ -16,9 +16,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"Defaults" ofType:@"plist"];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
-    [groupDefaults registerDefaults:appDefaults];
-    
+    NSDictionary *defaultsToRegister = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
+    [userDefaults registerDefaults:defaultsToRegister];
+
     [GammaController autoChangeOrangenessIfNeededWithTransition:NO];
     [self registerForNotifications];
     [AppDelegate updateNotifications];
