@@ -83,6 +83,21 @@
 }
 
 - (void)updateUI {
+    self.enabledSwitch.on = [groupDefaults boolForKey:@"enabled"];
+    self.colorChangingEnabledSwitch.on = [groupDefaults boolForKey:@"colorChangingEnabled"];
+    self.colorChangingLocationBasedSwitch.on = [groupDefaults boolForKey:@"colorChangingLocationEnabled"];
+    self.colorChangingNightModeSwitch.on = [groupDefaults boolForKey:@"colorChangingNightEnabled"];
+    
+    self.enabledSwitch.enabled = !(self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on);
+    self.colorChangingNightModeSwitch.enabled = self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on;
+    
+    if (self.enabledSwitch.on && !(self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on)){
+        self.timeOfDaySegmentedControl.selectedSegmentIndex = 1;
+        self.timeOfDaySegmentedControl.enabled = NO;
+    }
+    else{
+        self.timeOfDaySegmentedControl.enabled = YES;
+    }
 
     self.enabledSwitch.on = [groupDefaults boolForKey:@"enabled"];
 
@@ -107,13 +122,6 @@
     self.orangeSlider.tintColor = [UIColor colorWithRed:0.9f green:((2.0f-orange)/2.0f)*0.9f blue:(1.0f-orange)*0.9f alpha:1.0];
     
     self.enabledSwitch.onTintColor = [UIColor colorWithRed:0.9f green:((2.0f-orange)/2.0f)*0.9f blue:(1.0f-orange)*0.9f alpha:1.0];
-
-    self.colorChangingEnabledSwitch.on = [groupDefaults boolForKey:@"colorChangingEnabled"];
-    self.colorChangingLocationBasedSwitch.on = [groupDefaults boolForKey:@"colorChangingLocationEnabled"];
-    self.colorChangingNightModeSwitch.on = [groupDefaults boolForKey:@"colorChangingNightEnabled"];
-    
-    self.enabledSwitch.enabled = !(self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on);
-    self.colorChangingNightModeSwitch.enabled = self.colorChangingEnabledSwitch.on || self.colorChangingLocationBasedSwitch.on;
     
     NSDate *date = [self dateForHour:[groupDefaults integerForKey:@"autoStartHour"] andMinute:[groupDefaults integerForKey:@"autoStartMinute"]];
     self.startTimeTextField.text = [self.timeFormatter stringFromDate:date];
@@ -453,7 +461,8 @@
         [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
     }
     else if (self.enabledSwitch.on) {
-        [GammaController setGammaWithTransitionFrom:[groupDefaults floatForKey:@"maxOrange"] to:self.orangeSlider.value];
+        [GammaController setGammaWithTransitionFrom:[groupDefaults floatForKey:@"currentOrange"] to:self.orangeSlider.value];
+        [groupDefaults setFloat:self.orangeSlider.value forKey:@"currentOrange"];
     }
 }
 
