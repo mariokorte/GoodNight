@@ -171,14 +171,10 @@
             action = [self timeBasedActionForPrefix:@"auto"];
             switch (action) {
                 case SwitchToOrangeness:
-                    [groupDefaults setBool:NO forKey:@"dimEnabled"];
-                    [groupDefaults setBool:NO forKey:@"rgbEnabled"];
                 case KeepOrangenessEnabled:
                     newOrangeLevel = [groupDefaults floatForKey:@"maxOrange"];
                     break;
                 case SwitchToStandard:
-                    [groupDefaults setBool:NO forKey:@"dimEnabled"];
-                    [groupDefaults setBool:NO forKey:@"rgbEnabled"];
                 case KeepStandardEnabled:
                 default:
                     newOrangeLevel = [groupDefaults floatForKey:@"dayOrange"];
