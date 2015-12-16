@@ -152,7 +152,6 @@
             case SwitchToOrangeness:
                 [groupDefaults setBool:NO forKey:@"dimEnabled"];
                 [groupDefaults setBool:NO forKey:@"rgbEnabled"];
-                //Fallthrough intended
             case KeepOrangenessEnabled:
                 [self enableOrangenessWithDefaults:YES transition:transition orangeLevel:[groupDefaults floatForKey:@"nightOrange"]];
                 nightModeWasEnabled = YES;
@@ -172,10 +171,14 @@
             action = [self timeBasedActionForPrefix:@"auto"];
             switch (action) {
                 case SwitchToOrangeness:
+                    [groupDefaults setBool:NO forKey:@"dimEnabled"];
+                    [groupDefaults setBool:NO forKey:@"rgbEnabled"];
                 case KeepOrangenessEnabled:
                     newOrangeLevel = [groupDefaults floatForKey:@"maxOrange"];
                     break;
                 case SwitchToStandard:
+                    [groupDefaults setBool:NO forKey:@"dimEnabled"];
+                    [groupDefaults setBool:NO forKey:@"rgbEnabled"];
                 case KeepStandardEnabled:
                 default:
                     newOrangeLevel = [groupDefaults floatForKey:@"dayOrange"];
@@ -459,7 +462,7 @@
 }
 
 + (BOOL)gammaTableFunctionIsUsable {
-    NSString *hwModelStr = [[MobileGestaltClient sharedInstance] MGGetHWModelStr];
+    NSString *hwModelStr = (NSString *)[[MobileGestaltClient sharedInstance] MGGetHWModelStr];
     
     if ([hwModelStr isEqualToString:@"J98aAP"] || [hwModelStr isEqualToString:@"J99aAP"]) {
         return NO;

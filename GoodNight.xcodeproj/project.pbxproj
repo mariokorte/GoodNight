@@ -141,7 +141,7 @@
 			children = (
 				755924041C2168D5000E62AE /* IOMobileFramebuffer */,
 				755924051C2168E7000E62AE /* SpringBoardServices */,
-				755924061C216906000E62AE /* libMobileGestalt */,
+				755924061C216906000E62AE /* MobileGestalt */,
 			);
 			name = Clients;
 			sourceTree = "<group>";
@@ -164,13 +164,13 @@
 			name = SpringBoardServices;
 			sourceTree = "<group>";
 		};
-		755924061C216906000E62AE /* libMobileGestalt */ = {
+		755924061C216906000E62AE /* MobileGestalt */ = {
 			isa = PBXGroup;
 			children = (
 				755924001C21546A000E62AE /* MobileGestaltClient.h */,
 				755924011C21546A000E62AE /* MobileGestaltClient.m */,
 			);
-			name = libMobileGestalt;
+			name = MobileGestalt;
 			sourceTree = "<group>";
 		};
 		75885DCC1C2027A500B57791 /* Shared */ = {
