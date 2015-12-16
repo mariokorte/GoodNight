@@ -113,12 +113,7 @@
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
-    BOOL enabledOnLastCheck = [groupDefaults boolForKey:@"widgetLastCheckEnabled"];
-    BOOL enabled = [groupDefaults boolForKey:@"enabled"];
-    [groupDefaults setBool:enabled forKey:@"widgetLastCheckEnabled"];
-    [groupDefaults synchronize];
-    
-    completionHandler(enabledOnLastCheck != enabled ? NCUpdateResultNewData : NCUpdateResultNoData);
+    completionHandler(NCUpdateResultNewData);
 }
 
 - (void)dealloc {
