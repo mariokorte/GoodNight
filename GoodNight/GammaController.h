@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, TimeBasedAction) {
+typedef NS_ENUM(int, TimeBasedAction) {
     SwitchToOrangeness,
     SwitchToStandard,
     KeepOrangenessEnabled,
@@ -29,7 +29,6 @@ typedef NS_ENUM(NSInteger, TimeBasedAction) {
 + (void)disableOrangeness;
 + (TimeBasedAction)timeBasedActionForPrefix:(NSString*)autoOrNightPrefix;
 + (TimeBasedAction)timeBasedActionForLocationWithNewOrangeLevel:(float*)newOrangeLevel;
-+ (BOOL)checkCompatibility;
 + (void)setDarkroomEnabled:(BOOL)enable;
 + (BOOL)adjustmentForKeysEnabled:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;
 

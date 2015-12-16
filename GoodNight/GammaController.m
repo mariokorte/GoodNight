@@ -7,6 +7,7 @@
 //
 
 #import "GammaController.h"
+#import <UIKit/UIKit.h>
 
 #import "NSDate+Extensions.h"
 #include <dlfcn.h>
@@ -15,26 +16,25 @@
 #import "Brightness.h"
 #import "IOMobileFramebufferClient.h"
 #import "SpringBoardServicesClient.h"
-#import "MobileGestaltClient.h"
 
 @implementation GammaController
 
-+ (BOOL)invertScreenColours:(BOOL)invert {
-    IOMobileFramebufferColorRemapMode mode = [[IOMobileFramebufferClient sharedIOMobileFramebufferClient] colorRemapMode];
++ (BOOL)invertScreenColors:(BOOL)invert {
+    IOMobileFramebufferColorRemapMode mode = [[IOMobileFramebufferClient sharedInstance] colorRemapMode];
 
-    [[IOMobileFramebufferClient sharedIOMobileFramebufferClient] setColorRemapMode:invert ? IOMobileFramebufferColorRemapModeInverted : IOMobileFramebufferColorRemapModeNormal];
+    [[IOMobileFramebufferClient sharedInstance] setColorRemapMode:invert ? IOMobileFramebufferColorRemapModeInverted : IOMobileFramebufferColorRemapModeNormal];
 
     return invert ? mode != IOMobileFramebufferColorRemapModeInverted : mode != IOMobileFramebufferColorRemapModeNormal;
 }
 
 + (void)setDarkroomEnabled:(BOOL)enable {
     if (enable) {
-        if ([self invertScreenColours:YES]) {
+        if ([self invertScreenColors:YES]) {
             [self setGammaWithRed:1.0f green:0.0f blue:0.0f];
         }
     }
     else {
-        if ([self invertScreenColours:NO]) {
+        if ([self invertScreenColors:NO]) {
             [self setGammaWithRed:1.0f green:1.0f blue:1.0f];
             [groupDefaults setFloat:1.0f forKey:@"currentOrange"];
             [self autoChangeOrangenessIfNeededWithTransition:NO];
@@ -43,6 +43,33 @@
 }
 
 + (void)setGammaWithRed:(float)red green:(float)green blue:(float)blue {
+    if ([[IOMobileFramebufferClient sharedInstance] gamutMatrixFunctionIsAvailable]) {
+        [self setGammaWithMatrixAndRed:red green:green blue:blue];
+    }
+    else if (![[IOMobileFramebufferClient sharedInstance] gamutMatrixFunctionIsAvailable]) {
+        [self setGammaWithTableAndRed:red green:green blue:blue];
+    }
+}
+
++ (void)setGammaWithMatrixAndRed:(float)red green:(float)green blue:(float)blue {
+    IOMobileFramebufferGamutMatrix gamutMatrix;
+    memset(&gamutMatrix, 0, sizeof(gamutMatrix));
+    
+    if ([userDefaults boolForKey:@"enabled"]) {
+        red += 0.5;
+        green = (green / 3) + 0.5;
+        blue = (blue / 10) + 0.5;
+    }
+    
+    gamutMatrix.content.matrix[0][0] = GamutMatrixValue(red);
+    gamutMatrix.content.matrix[1][1] = GamutMatrixValue(green);
+    gamutMatrix.content.matrix[2][2] = GamutMatrixValue(blue);
+    
+    [[IOMobileFramebufferClient sharedInstance] setGamutMatrix:&gamutMatrix];
+    [[IOMobileFramebufferClient sharedInstance] gamutMatrix:&gamutMatrix];
+}
+
++ (void)setGammaWithTableAndRed:(float)red green:(float)green blue:(float)blue {
     unsigned rs = red * 0x100;
     NSParameterAssert(rs <= 0x100);
     
@@ -60,7 +87,7 @@
     FILE *file = fopen([filePath UTF8String], "rb");
     
     if (file == NULL) {
-        [[IOMobileFramebufferClient sharedIOMobileFramebufferClient] gammaTable:&data];
+        [[IOMobileFramebufferClient sharedInstance] gammaTable:&data];
         file = fopen([filePath UTF8String], "wb");
         NSParameterAssert(file != NULL);
         
@@ -86,7 +113,7 @@
         data.values[j + 0x203] = data.values[b + 0x203];
     }
     
-    [[IOMobileFramebufferClient sharedIOMobileFramebufferClient] setGammaTable:&data];
+    [[IOMobileFramebufferClient sharedInstance] setGammaTable:&data];
 }
 
 + (void)setGammaWithOrangeness:(float)percentOrange {
@@ -283,26 +310,13 @@
 }
 
 + (BOOL)wakeUpScreenIfNeeded {
-    BOOL isLocked = [[SpringBoardServicesClient sharedSpringBoardServicesClient] SBGetScreenLockStatusIsLocked];
+    BOOL isLocked = [[SpringBoardServicesClient sharedInstance] SBGetScreenLockStatusIsLocked];
     
     if (isLocked) {
-        [[SpringBoardServicesClient sharedSpringBoardServicesClient] SBSUndimScreen];
+        [[SpringBoardServicesClient sharedInstance] SBSUndimScreen];
     }
     return !isLocked;
     
-}
-
-+ (BOOL)checkCompatibility {
-    
-    BOOL compatible = YES;
-    
-    NSString *hwModelStr = [[MobileGestaltClient sharedMobileGestaltClient] MGGetHWModelStr];
-    
-    if ([hwModelStr isEqualToString:@"J98aAP"] || [hwModelStr isEqualToString:@"J99aAP"]) {
-        compatible = NO;
-    }
-    
-    return compatible;
 }
 
 + (void)enableDimness {
@@ -422,7 +436,7 @@
 }
 
 + (void)suspendApp {
-    [[SpringBoardServicesClient sharedSpringBoardServicesClient] SBSuspend];
+    [[SpringBoardServicesClient sharedInstance] SBSuspend];
 }
 
 + (BOOL)adjustmentForKeysEnabled:(NSString *)firstKey, ... {

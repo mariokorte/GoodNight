@@ -81,6 +81,7 @@
 
 - (void)updateUI {
     self.enabledSwitch.on = [groupDefaults boolForKey:@"enabled"];
+    
     self.colorChangingEnabledSwitch.on = [groupDefaults boolForKey:@"colorChangingEnabled"];
     self.colorChangingLocationBasedSwitch.on = [groupDefaults boolForKey:@"colorChangingLocationEnabled"];
     self.colorChangingNightModeSwitch.on = [groupDefaults boolForKey:@"colorChangingNightEnabled"];
@@ -161,7 +162,7 @@
         NSString *title = @"Error";
         NSString *message = @"You may only use one adjustment at a time. Please disable any other adjustments before enabling this one.";
         NSString *cancelButton = @"Cancel";
-        NSString *disableButton = @"Disable others";
+        NSString *disableButton = @"Disable";
         
         if (NSClassFromString(@"UIAlertController") != nil) {
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
