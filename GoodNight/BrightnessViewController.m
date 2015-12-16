@@ -25,9 +25,15 @@
     warningIgnored = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDefaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void)userDefaultsChanged:(NSNotification *)notification {
+    [self updateUI];
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
     [self updateUI];
 }
 

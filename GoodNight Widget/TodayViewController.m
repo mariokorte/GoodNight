@@ -18,22 +18,27 @@
     NSDictionary *appDefaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
     [groupDefaults registerDefaults:appDefaults];
     
-    self.preferredContentSize = CGSizeMake(0, 110);
+    //self.preferredContentSize = CGSizeMake(0, 60);
 
     self.toggleButton.layer.cornerRadius = 7;
     self.toggleButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
     self.toggleButton.layer.masksToBounds = YES;
     self.toggleButton.clipsToBounds = YES;
     
-    self.disableButton.layer.cornerRadius = 7;
-    self.disableButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
-    self.disableButton.layer.masksToBounds = YES;
+    self.darkroomButton.layer.cornerRadius = 7;
+    self.darkroomButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
+    self.darkroomButton.layer.masksToBounds = YES;
     
-    if (self.view.bounds.size.width > 320) {
-        self.toggleButton.frame = CGRectMake(self.toggleButton.frame.origin.x + 30, self.toggleButton.frame.origin.y, self.toggleButton.frame.size.width, self.toggleButton.frame.size.height);
-        self.disableButton.frame = CGRectMake(self.disableButton.frame.origin.x + 30, self.disableButton.frame.origin.y, self.disableButton.frame.size.width, self.disableButton.frame.size.height);
-        self.temperatureLabel.frame = CGRectMake(self.temperatureLabel.frame.origin.x + 30, self.temperatureLabel.frame.origin.y, self.temperatureLabel.frame.size.width, self.temperatureLabel.frame.size.height);
-    }
+//    if (self.view.bounds.size.width > 320) {
+//        self.toggleButton.frame = CGRectMake(self.toggleButton.frame.origin.x + 30, self.toggleButton.frame.origin.y, self.toggleButton.frame.size.width, self.toggleButton.frame.size.height);
+//        self.darkroomButton.frame = CGRectMake(self.darkroomButton.frame.origin.x + 30, self.darkroomButton.frame.origin.y, self.darkroomButton.frame.size.width, self.darkroomButton.frame.size.height);
+//        self.temperatureLabel.frame = CGRectMake(self.temperatureLabel.frame.origin.x + 30, self.temperatureLabel.frame.origin.y, self.temperatureLabel.frame.size.width, self.temperatureLabel.frame.size.height);
+//    }
+    
+    NSUserDefaults *defaults = userDefaults;
+    [defaults addSuiteNamed:appGroupID];
+    
+    [defaults addObserver:self forKeyPath:@"currentOrange" options:NSKeyValueObservingOptionNew context:NULL];
     
     [self updateUI];
 }
@@ -43,10 +48,22 @@
     [self updateUI];
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    [self updateUI];
+}
+
 - (void)updateUI {
     BOOL enabled = [groupDefaults boolForKey:@"enabled"];
     self.toggleButton.selected = enabled;
     self.toggleButton.layer.backgroundColor = enabled ? [[UIColor colorWithRed:0.8f green:0.495f blue:0.09f alpha:1.0] CGColor] : [[UIColor grayColor] CGColor];
+    
+    BOOL darkroomEnabled = [groupDefaults boolForKey:@"darkroomEnabled"];
+    BOOL dimEnabled = [groupDefaults boolForKey:@"dimEnabled"];
+    
+    self.darkroomButton.selected = darkroomEnabled && dimEnabled;
+    self.darkroomButton.layer.backgroundColor = darkroomEnabled && dimEnabled ? [[UIColor colorWithRed:0.8f green:0.0f blue:0.0f alpha:1.0] CGColor] : [[UIColor grayColor] CGColor];
+    
+    self.temperatureLabel.text = [NSString stringWithFormat:@"Current Temperature: %dK", (int)(([groupDefaults floatForKey:@"currentOrange"] * 45 + 20) * 10)*10];
 }
 
 - (IBAction)toggleButtonClicked {
@@ -56,6 +73,8 @@
         [GammaController disableOrangeness];
     }
     else{
+        [GammaController setDarkroomEnabled:NO];
+        [NSThread sleepForTimeInterval:0.1];
         [GammaController enableOrangenessWithDefaults:YES transition:YES];
         [groupDefaults setBool:NO forKey:@"dimEnabled"];
         [groupDefaults setBool:NO forKey:@"rgbEnabled"];
@@ -66,8 +85,31 @@
     [self updateUI];
 }
 
-- (IBAction)disableButtonClicked {
-
+- (IBAction)darkroomButtonClicked {
+    BOOL darkroomEnabled = [groupDefaults boolForKey:@"darkroomEnabled"];
+    BOOL dimEnabled = [groupDefaults boolForKey:@"dimEnabled"];
+    
+    if (dimEnabled && darkroomEnabled){
+        [groupDefaults setBool:NO forKey:@"enabled"];
+        [groupDefaults setBool:NO forKey:@"dimEnabled"];
+        [groupDefaults setBool:NO forKey:@"darkroomEnabled"];
+        [groupDefaults setBool:NO forKey:@"rgbEnabled"];
+        [groupDefaults setBool:NO forKey:@"manualOverride"];
+        
+        [GammaController setDarkroomEnabled:NO];
+        [NSThread sleepForTimeInterval:0.1];
+        [GammaController autoChangeOrangenessIfNeededWithTransition:YES];
+    }
+    else{
+        [GammaController setDarkroomEnabled:YES];
+        [groupDefaults setBool:NO forKey:@"enabled"];
+        [groupDefaults setBool:YES forKey:@"dimEnabled"];
+        [groupDefaults setBool:YES forKey:@"darkroomEnabled"];
+        [groupDefaults setBool:NO forKey:@"rgbEnabled"];
+        [groupDefaults setBool:YES forKey:@"manualOverride"];
+    }
+    
+    [self updateUI];
 }
 
 - (void)widgetPerformUpdateWithCompletionHandler:(void (^)(NCUpdateResult))completionHandler {
@@ -77,6 +119,12 @@
     [groupDefaults synchronize];
     
     completionHandler(enabledOnLastCheck != enabled ? NCUpdateResultNewData : NCUpdateResultNoData);
+}
+
+- (void)dealloc {
+    NSUserDefaults *defaults = userDefaults;
+    [defaults addSuiteNamed:appGroupID];
+    [defaults removeObserver:self forKeyPath:@"currentOrange"];
 }
 
 @end

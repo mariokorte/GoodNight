@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		32AFEC481C1B1B8A00142DD9 /* IOMobileFramebufferClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */; };
 		755924021C21546A000E62AE /* MobileGestaltClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 755924011C21546A000E62AE /* MobileGestaltClient.m */; };
+		755924081C21B147000E62AE /* MobileGestaltClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 755924011C21546A000E62AE /* MobileGestaltClient.m */; };
 		75885DCB1C2026B700B57791 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75885DCA1C2026B700B57791 /* Defaults.plist */; };
 		75885DCF1C2027F400B57791 /* SpringBoardServicesClient.m in Sources */ = {isa = PBXBuildFile; fileRef = ACCE45A11C1B6D3100CD094C /* SpringBoardServicesClient.m */; };
 		75885DD01C2027F400B57791 /* IOMobileFramebufferClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */; };
@@ -135,6 +136,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		755924031C21681D000E62AE /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				755924041C2168D5000E62AE /* IOMobileFramebuffer */,
+				755924051C2168E7000E62AE /* SpringBoardServices */,
+				755924061C216906000E62AE /* libMobileGestalt */,
+			);
+			name = Clients;
+			sourceTree = "<group>";
+		};
+		755924041C2168D5000E62AE /* IOMobileFramebuffer */ = {
+			isa = PBXGroup;
+			children = (
+				32AFEC461C1B1B8A00142DD9 /* IOMobileFramebufferClient.h */,
+				32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */,
+			);
+			name = IOMobileFramebuffer;
+			sourceTree = "<group>";
+		};
+		755924051C2168E7000E62AE /* SpringBoardServices */ = {
+			isa = PBXGroup;
+			children = (
+				ACCE45A01C1B6D3100CD094C /* SpringBoardServicesClient.h */,
+				ACCE45A11C1B6D3100CD094C /* SpringBoardServicesClient.m */,
+			);
+			name = SpringBoardServices;
+			sourceTree = "<group>";
+		};
+		755924061C216906000E62AE /* libMobileGestalt */ = {
+			isa = PBXGroup;
+			children = (
+				755924001C21546A000E62AE /* MobileGestaltClient.h */,
+				755924011C21546A000E62AE /* MobileGestaltClient.m */,
+			);
+			name = libMobileGestalt;
+			sourceTree = "<group>";
+		};
 		75885DCC1C2027A500B57791 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -232,12 +270,7 @@
 		926B68F91BC1B91D00F12297 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				755924001C21546A000E62AE /* MobileGestaltClient.h */,
-				755924011C21546A000E62AE /* MobileGestaltClient.m */,
-				ACCE45A01C1B6D3100CD094C /* SpringBoardServicesClient.h */,
-				ACCE45A11C1B6D3100CD094C /* SpringBoardServicesClient.m */,
-				32AFEC461C1B1B8A00142DD9 /* IOMobileFramebufferClient.h */,
-				32AFEC471C1B1B8A00142DD9 /* IOMobileFramebufferClient.m */,
+				755924031C21681D000E62AE /* Clients */,
 				B96BB64D1B38D96600F1C3AE /* GammaController.h */,
 				B96BB64E1B38D96600F1C3AE /* GammaController.m */,
 			);
@@ -491,6 +524,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				755924081C21B147000E62AE /* MobileGestaltClient.m in Sources */,
 				75885DD41C20280C00B57791 /* NSDate+Extensions.m in Sources */,
 				75885DCF1C2027F400B57791 /* SpringBoardServicesClient.m in Sources */,
 				75885DD01C2027F400B57791 /* IOMobileFramebufferClient.m in Sources */,
