@@ -30,27 +30,27 @@
     }
     
     self.whitePointSlider.maximumValue = 0.65535;
-    self.whitePointSlider.value = [userDefaults floatForKey:@"whitePointValue"];
-    self.whitePointSwitch.on = [userDefaults boolForKey:@"whitePointEnabled"];
+    self.whitePointSlider.value = [groupDefaults floatForKey:@"whitePointValue"];
+    self.whitePointSwitch.on = [groupDefaults boolForKey:@"whitePointEnabled"];
 }
 
 - (IBAction)whitePointSliderChanged {
-    [userDefaults setFloat:self.whitePointSlider.value forKey:@"whitePointValue"];
+    [groupDefaults setFloat:self.whitePointSlider.value forKey:@"whitePointValue"];
     
     if (self.whitePointSwitch.on) {
-        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[userDefaults floatForKey:@"whitePointValue"] * 100000];
+        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[groupDefaults floatForKey:@"whitePointValue"] * 100000];
     }
 }
 
 - (IBAction)whitePointSwitchChanged {
-    [userDefaults setBool:self.whitePointSwitch.on forKey:@"whitePointEnabled"];
+    [groupDefaults setBool:self.whitePointSwitch.on forKey:@"whitePointEnabled"];
     
     if (self.whitePointSwitch.on) {
         if ([[IOMobileFramebufferClient sharedInstance] gamutMatrixFunctionIsUsable]) {
-            [userDefaults setBool:NO forKey:@"enabled"];
+            [groupDefaults setBool:NO forKey:@"enabled"];
             [GammaController setGammaWithMatrixAndRed:1 green:1 blue:1];
         }
-        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[userDefaults floatForKey:@"whitePointValue"] * 100000];
+        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[groupDefaults floatForKey:@"whitePointValue"] * 100000];
     }
     else {
         [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:IOMobileFramebufferBrightnessCorrectionDefault];
@@ -59,10 +59,10 @@
 
 - (IBAction)whitePointValueReset {
     self.whitePointSlider.value = self.whitePointSlider.maximumValue;
-    [userDefaults setFloat:self.whitePointSlider.value forKey:@"whitePointValue"];
+    [groupDefaults setFloat:self.whitePointSlider.value forKey:@"whitePointValue"];
     
     if (self.whitePointSwitch.on) {
-        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[userDefaults floatForKey:@"whitePointValue"] * 100000];
+        [[IOMobileFramebufferClient sharedInstance] setBrightnessCorrection:[groupDefaults floatForKey:@"whitePointValue"] * 100000];
     }
 }
 
