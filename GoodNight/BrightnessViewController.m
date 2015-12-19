@@ -42,6 +42,22 @@
     self.dimSwitch.on = [groupDefaults boolForKey:@"dimEnabled"];
     self.darkroomSwitch.on = [groupDefaults boolForKey:@"darkroomEnabled"];
     
+    if (self.dimSwitch.on) {
+        self.darkroomSwitch.enabled = NO;
+    }
+    else {
+        self.darkroomSwitch.enabled = YES;
+    }
+    
+    if (self.darkroomSwitch.on) {
+        self.dimSwitch.enabled = NO;
+        self.dimSlider.enabled = NO;
+    }
+    else {
+        self.dimSwitch.enabled = YES;
+        self.dimSlider.enabled = YES;
+    }
+    
     float brightness = self.dimSlider.value;
     
     self.dimSwitch.onTintColor = [UIColor colorWithRed:(1.0f-brightness)*0.9f green:((2.0f-brightness)/2.0f)*0.9f blue:0.9f alpha:1.0];
@@ -53,15 +69,10 @@
     if (![GammaController adjustmentForKeysEnabled:@"enabled", @"rgbEnabled", nil]) {
         [groupDefaults setBool:self.dimSwitch.on forKey:@"dimEnabled"];
         
-        if (self.dimSwitch.on && self.darkroomSwitch.on) {
-            [GammaController setDarkroomEnabled:YES];
-        }
-        else if (self.dimSwitch.on){
-            [GammaController setDarkroomEnabled:NO];
+        if (self.dimSwitch.on) {
             [GammaController enableDimness];
         }
         else {
-            [GammaController setDarkroomEnabled:NO];
             [GammaController disableDimness];
         }
     }
@@ -98,13 +109,13 @@
 - (IBAction)darkroomSwitchChanged {
     [groupDefaults setBool:self.darkroomSwitch.on forKey:@"darkroomEnabled"];
     
-    if (self.dimSwitch.on && self.darkroomSwitch.on) {
+    if (self.darkroomSwitch.on) {
         [GammaController setDarkroomEnabled:YES];
     }
-    else if (self.dimSwitch.on){
+    else {
         [GammaController setDarkroomEnabled:NO];
-        [GammaController enableDimness];
     }
+    
     [self updateUI];
 }
 
@@ -171,9 +182,9 @@
     
     [self.darkroomSwitch setOn:NO animated:YES];
     [groupDefaults setBool:NO forKey:@"darkroomEnabled"];
+    [GammaController setDarkroomEnabled:NO];
     
     if (self.dimSwitch.on) {
-        [GammaController setDarkroomEnabled:NO];
         [GammaController enableDimness];
     }
 }
