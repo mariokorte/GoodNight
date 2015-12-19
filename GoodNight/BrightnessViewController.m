@@ -66,7 +66,7 @@
 }
 
 - (IBAction)brightnessSwitchChanged {
-    if (![GammaController adjustmentForKeysEnabled:@"enabled", @"rgbEnabled", nil]) {
+    if (![GammaController adjustmentForKeysEnabled:@"enabled", @"rgbEnabled", @"whitePointEnabled", nil]) {
         [groupDefaults setBool:self.dimSwitch.on forKey:@"dimEnabled"];
         
         if (self.dimSwitch.on) {
@@ -90,6 +90,7 @@
             [alertController addAction:[UIAlertAction actionWithTitle:disableButton style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [groupDefaults setBool:NO forKey:@"enabled"];
                 [groupDefaults setBool:NO forKey:@"rgbEnabled"];
+                [groupDefaults setBool:NO forKey:@"whitePointEnabled"];
                 [groupDefaults setBool:YES forKey:@"dimEnabled"];
                 [self brightnessSwitchChanged];
             }]];
