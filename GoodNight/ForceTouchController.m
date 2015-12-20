@@ -11,19 +11,19 @@
 
 @implementation ForceTouchController
 
-+ (instancetype)sharedForceTouchController {
++ (instancetype)sharedInstance {
     static dispatch_once_t onceToken = 0;
     static ForceTouchController *sharedForceTouchController = nil;
     
     dispatch_once(&onceToken, ^{
         sharedForceTouchController = [[self alloc] init];
-
+        
         NSUserDefaults *defaults = userDefaults;
         [defaults addSuiteNamed:appGroupID];
-
         [defaults addObserver:sharedForceTouchController forKeyPath:@"enabled" options:NSKeyValueObservingOptionNew context:NULL];
         [defaults addObserver:sharedForceTouchController forKeyPath:@"dimEnabled" options:NSKeyValueObservingOptionNew context:NULL];
         [defaults addObserver:sharedForceTouchController forKeyPath:@"rgbEnabled" options:NSKeyValueObservingOptionNew context:NULL];
+        [defaults addObserver:sharedForceTouchController forKeyPath:@"whitePointEnabled" options:NSKeyValueObservingOptionNew context:NULL];
         [defaults addObserver:sharedForceTouchController forKeyPath:@"keyEnabled" options:NSKeyValueObservingOptionNew context:NULL];
     });
     
@@ -40,6 +40,7 @@
     [defaults removeObserver:self forKeyPath:@"enabled"];
     [defaults removeObserver:self forKeyPath:@"dimEnabled"];
     [defaults removeObserver:self forKeyPath:@"rgbEnabled"];
+    [defaults removeObserver:self forKeyPath:@"whitePointEnabled"];
     [defaults removeObserver:self forKeyPath:@"keyEnabled"];
 }
 
@@ -92,6 +93,19 @@
         }
     }
     
+    else if ([groupDefaults boolForKey:@"whitePointForceTouch"]) {
+        shortcutType = @"whitePointForceTouchAction";
+        
+        if (![groupDefaults boolForKey:@"whitePointEnabled"]) {
+            forceTouchActionEnabled = NO;
+            shortcutTitle = @"Enable White Point";
+        }
+        else if ([groupDefaults boolForKey:@"whitePointEnabled"]) {
+            forceTouchActionEnabled = YES;
+            shortcutTitle = @"Disable White Point";
+        }
+    }
+    
     if (forceTouchActionEnabled == NO) {
         shortcutSubtitle = turnOnText;
         iconTemplate = @"enable-switch";
@@ -130,7 +144,7 @@
             [GammaController disableOrangeness];
         }
         else if (![groupDefaults boolForKey:@"enabled"]) {
-            if (![GammaController adjustmentForKeysEnabled:@"dimEnabled", @"rgbEnabled", nil]) {
+            if (![GammaController adjustmentForKeysEnabled:@"dimEnabled", @"rgbEnabled", @"whitePointEnabled", nil]) {
                 [GammaController enableOrangenessWithDefaults:YES transition:YES];
             }
             else {
@@ -143,7 +157,7 @@
             [GammaController disableDimness];
         }
         else if (![groupDefaults boolForKey:@"dimEnabled"]) {
-            if (![GammaController adjustmentForKeysEnabled:@"enabled", @"rgbEnabled", nil]) {
+            if (![GammaController adjustmentForKeysEnabled:@"enabled", @"rgbEnabled", @"whitePointEnabled", nil]) {
                 [GammaController enableDimness];
             }
             else {
@@ -156,11 +170,26 @@
             [GammaController disableColorAdjustment];
         }
         else if (![groupDefaults boolForKey:@"rgbEnabled"]) {
-            if (![GammaController adjustmentForKeysEnabled:@"enabled", @"dimEnabled", nil]) {
+            if (![GammaController adjustmentForKeysEnabled:@"enabled", @"dimEnabled", @"whitePointEnabled", nil]) {
                 [GammaController setGammaWithCustomValues];
             }
             else {
                 [self showFailedAlertWithKey:@"rgbEnabled"];
+            }
+        }
+    }
+    else if ([shortcutItem.type isEqualToString:@"whitePointForceTouchAction"]) {
+        if ([groupDefaults boolForKey:@"whitePointEnabled"]) {
+            [GammaController resetWhitePoint];
+            [groupDefaults setBool:NO forKey:@"whitePointEnabled"];
+        }
+        else if (![groupDefaults boolForKey:@"whitePointEnabled"]) {
+            if (![GammaController adjustmentForKeysEnabled:@"enabled", @"dimEnabled", @"rgbEnabled", nil]) {
+                [GammaController setWhitePoint:[groupDefaults boolForKey:@"whitePointValue"]];
+                [groupDefaults setBool:YES forKey:@"whitePointEnabled"];
+            }
+            else {
+                [self showFailedAlertWithKey:@"whitePointEnabled"];
             }
         }
     }

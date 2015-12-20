@@ -17,21 +17,21 @@
     
     NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"Defaults" ofType:@"plist"];
     NSDictionary *defaultsToRegister = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
-    [userDefaults registerDefaults:defaultsToRegister];
+    [groupDefaults registerDefaults:defaultsToRegister];
     
     [GammaController autoChangeOrangenessIfNeededWithTransition:NO];
     [self registerForNotifications];
     [AppDelegate updateNotifications];
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"9.0") && self.window.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable){
-        [ForceTouchController sharedForceTouchController];
+        [ForceTouchController sharedInstance];
     }
     
     if (application.applicationState == UIApplicationStateBackground) {
         [self installBackgroundTask:application];
     }
     
-    [ForceTouchController sharedForceTouchController];
+    [ForceTouchController sharedInstance];
 
     [self.window makeKeyAndVisible];
     [self displaySplashAnimation];
