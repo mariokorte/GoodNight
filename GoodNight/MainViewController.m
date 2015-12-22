@@ -318,7 +318,7 @@
         [GammaController disableOrangeness];
     }
     
-        [groupDefaults setBool:NO forKey:@"manualOverride"];
+    [groupDefaults setBool:NO forKey:@"manualOverride"];
     
     [AppDelegate updateNotifications];
     
