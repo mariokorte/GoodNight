@@ -101,7 +101,18 @@
 }
 
 - (IBAction)colorSwitchChanged {
-    if (![GammaController adjustmentForKeysEnabled:@"enabled", @"dimEnabled",@"whitePointEnabled", nil]) {
+    BOOL adjustmentsEnabled = [AppDelegate checkAlertNeededWithViewController:self
+                andExecutionBlock:^(UIAlertAction *action) {
+                    [groupDefaults setBool:NO forKey:@"enabled"];
+                    [groupDefaults setBool:NO forKey:@"dimEnabled"];
+                    [groupDefaults setBool:NO forKey:@"whitePointEnabled"];
+                    [groupDefaults setBool:YES forKey:@"rgbEnabled"];
+                    [GammaController setDarkroomEnabled:NO];
+                    [self colorSwitchChanged];
+                }
+                forKeys:@"enabled", @"dimEnabled",@"whitePointEnabled", nil];
+    
+    if (!adjustmentsEnabled) {
         [groupDefaults setBool:self.rgbSwitch.on forKey:@"rgbEnabled"];
         
         if (self.rgbSwitch.on) {
@@ -109,34 +120,6 @@
         }
         else {
             [GammaController disableColorAdjustment];
-        }
-    }
-    else {
-        NSString *title = @"Error";
-        NSString *message = @"You may only use one adjustment at a time. Please disable any other adjustments before enabling this one.";
-        NSString *cancelButton = @"Cancel";
-        NSString *disableButton = @"Disable";
-        
-        if (NSClassFromString(@"UIAlertController") != nil) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-            
-            [alertController addAction:[UIAlertAction actionWithTitle:cancelButton style:UIAlertActionStyleCancel handler:nil]];
-            
-            [alertController addAction:[UIAlertAction actionWithTitle:disableButton style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                [groupDefaults setBool:NO forKey:@"enabled"];
-                [groupDefaults setBool:NO forKey:@"dimEnabled"];
-                [groupDefaults setBool:NO forKey:@"whitePointEnabled"];
-                [groupDefaults setBool:YES forKey:@"rgbEnabled"];
-                [GammaController setDarkroomEnabled:NO];
-                [self colorSwitchChanged];
-            }]];
-            
-            [self presentViewController:alertController animated:YES completion:nil];
-        }
-        else {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButton otherButtonTitles:nil];
-            
-            [alertView show];
         }
     }
     

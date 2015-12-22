@@ -38,5 +38,6 @@ static uint32_t minWhitePointValue;
 + (TimeBasedAction)timeBasedActionForLocationWithNewOrangeLevel:(float*)newOrangeLevel;
 + (void)setDarkroomEnabled:(BOOL)enable;
 + (BOOL)adjustmentForKeysEnabled:(NSString *)firstKey, ... NS_REQUIRES_NIL_TERMINATION;
++ (BOOL)adjustmentForKeysEnabled:(NSString *)firstKey withParameters:(va_list)valist;
 
 @end
