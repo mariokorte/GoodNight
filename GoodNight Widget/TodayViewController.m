@@ -18,7 +18,7 @@
     NSDictionary *appDefaults = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
     [groupDefaults registerDefaults:appDefaults];
     
-    //self.preferredContentSize = CGSizeMake(0, 60);
+    self.preferredContentSize = CGSizeMake(320, 80);
 
     self.toggleButton.layer.cornerRadius = 7;
     self.toggleButton.layer.backgroundColor = [[UIColor grayColor] CGColor];
@@ -63,7 +63,7 @@
     self.darkroomButton.selected = darkroomEnabled && dimEnabled;
     self.darkroomButton.layer.backgroundColor = darkroomEnabled && dimEnabled ? [[UIColor colorWithRed:0.8f green:0.0f blue:0.0f alpha:1.0] CGColor] : [[UIColor grayColor] CGColor];
     
-    self.temperatureLabel.text = [NSString stringWithFormat:@"Current Temperature: %dK", (int)(([groupDefaults floatForKey:@"currentOrange"] * 45 + 20) * 10)*10];
+    self.temperatureLabel.text = darkroomEnabled ? @"Darkroom mode enabled" : [NSString stringWithFormat:@"Current Temperature: %dK", (int)(([groupDefaults floatForKey:@"currentOrange"] * 45 + 20) * 10)*10];
 }
 
 - (IBAction)toggleButtonClicked {
@@ -120,6 +120,11 @@
     NSUserDefaults *defaults = userDefaults;
     [defaults addSuiteNamed:appGroupID];
     [defaults removeObserver:self forKeyPath:@"currentOrange"];
+}
+
+- (UIEdgeInsets)widgetMarginInsetsForProposedMarginInsets:(UIEdgeInsets)defaultMarginInsets
+{
+    return UIEdgeInsetsZero;
 }
 
 @end

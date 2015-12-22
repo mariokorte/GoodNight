@@ -52,14 +52,14 @@
 
 + (BOOL)invertScreenColors:(BOOL)invert {
     IOMobileFramebufferColorRemapMode mode = [[IOMobileFramebufferClient sharedInstance] colorRemapMode];
-    [[IOMobileFramebufferClient sharedInstance] setColorRemapMode:invert ? IOMobileFramebufferColorRemapModeInverted : IOMobileFramebufferColorRemapModeNormal];
-    return invert ? mode != IOMobileFramebufferColorRemapModeInverted : mode != IOMobileFramebufferColorRemapModeNormal;
+    [[IOMobileFramebufferClient sharedInstance] setColorRemapMode:invert ? IOMobileFramebufferColorRemapModeInvertedGrayscale : IOMobileFramebufferColorRemapModeNormal];
+    return invert ? mode != IOMobileFramebufferColorRemapModeInvertedGrayscale : mode != IOMobileFramebufferColorRemapModeNormal;
 }
 
 + (void)setDarkroomEnabled:(BOOL)enable {
     if (enable) {
         if ([self invertScreenColors:YES]) {
-            [self setGammaWithRed:1.0f green:0.0f blue:0.0f];
+            [self setGammaWithRed:0.8f green:0.f blue:0.f];
         }
     }
     else {
